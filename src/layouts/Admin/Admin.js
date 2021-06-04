@@ -109,7 +109,7 @@ function Admin(props) {
             <Sidebar
               routes={routes}
               logo={{
-                text: "Sistema de gestion",
+                text: "GAS DETECT",
                 imgSrc: logo,
               }}
               toggleSidebar={toggleSidebar}
