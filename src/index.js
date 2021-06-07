@@ -20,6 +20,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import AdminLayout from "layouts/Admin/Admin.js";
+import NotFound from "./views/404";
 
 import "assets/scss/black-dashboard-react.scss";
 import "assets/demo/demo.css";
@@ -35,7 +36,8 @@ ReactDOM.render(
       <BrowserRouter>
         <Switch>
           <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-          <Redirect from="/" to="/admin/dashboard" />
+          <Redirect exact from="/" to="/admin/dashboard" />
+          <Route path="*" component={NotFound} />
         </Switch>
       </BrowserRouter>
     </BackgroundColorWrapper>
