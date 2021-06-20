@@ -16,7 +16,8 @@
 
 */
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 
@@ -42,6 +43,9 @@ function AdminNavbar(props) {
   const [collapseOpen, setcollapseOpen] = React.useState(false);
   const [modalSearch, setmodalSearch] = React.useState(false);
   const [color, setcolor] = React.useState("navbar-transparent");
+  const { logOut } = useAuth();
+  const history = useHistory();
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor);
     // Specify how to clean up after this effect:
@@ -70,6 +74,17 @@ function AdminNavbar(props) {
   const toggleModalSearch = () => {
     setmodalSearch(!modalSearch);
   };
+
+  async function handleLogOut() {
+    try {
+      await logOut();
+      history.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const { currentUser } = useAuth();
   return (
     <>
       <Navbar className={classNames("navbar-absolute", color)} expand="lg">
@@ -110,6 +125,7 @@ function AdminNavbar(props) {
                       src={require("assets/img/anime3.png").default}
                     />
                   </div>
+                  <span className="ml-2">{currentUser.email}</span>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li" href="/admin/user-profile">
@@ -119,10 +135,11 @@ function AdminNavbar(props) {
                       </DropdownItem>
                     </Link>
                   </NavLink>
-
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">Log out</DropdownItem>
+                    <DropdownItem className="nav-item" onClick={handleLogOut}>
+                      Log out
+                    </DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>

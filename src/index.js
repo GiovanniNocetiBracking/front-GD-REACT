@@ -21,6 +21,10 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import AdminLayout from "layouts/Admin/Admin.js";
 import NotFound from "./views/404";
+import { AuthProvider } from "./contexts/AuthContext";
+import Register from "./components/Auth/Register";
+import Login from "./components/Auth/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 import "assets/scss/black-dashboard-react.scss";
 import "assets/demo/demo.css";
@@ -33,13 +37,21 @@ import BackgroundColorWrapper from "./components/BackgroundColorWrapper/Backgrou
 ReactDOM.render(
   <ThemeContextWrapper>
     <BackgroundColorWrapper>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-          <Redirect exact from="/" to="/admin/dashboard" />
-          <Route path="*" component={NotFound} />
-        </Switch>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Switch>
+            <PrivateRoute
+              path="/admin"
+              render={(props) => <AdminLayout {...props} />}
+            />
+            <Redirect exact from="/" to="/admin/dashboard" />
+            <Route path="/contact-us" />
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route path="*" component={NotFound} />
+          </Switch>
+        </BrowserRouter>
+      </AuthProvider>
     </BackgroundColorWrapper>
   </ThemeContextWrapper>,
   document.getElementById("root")

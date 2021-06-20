@@ -50,7 +50,6 @@ function Dashboard(props) {
               </CardBody>
             </Card>
           </Col>
-
           <Col lg="4">
             <Card className="card-chart">
               <CardHeader>
