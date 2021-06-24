@@ -6,7 +6,7 @@ export const TextField = ({ label, placeholder, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>
-      <Label for={field.name} sm={4}>
+      <Label for={field.name} sm={12}>
         {label}
       </Label>
       <Col sm={12}>

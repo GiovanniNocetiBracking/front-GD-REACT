@@ -25,24 +25,21 @@ import {
   CardBody,
   CardFooter,
   CardText,
-  FormGroup,
-  Form,
-  Input,
   Row,
   Col,
 } from "reactstrap";
+import UserForm from "../components/Forms/UserProfile";
 
 function UserProfile() {
   return (
     <>
       <div className="content">
         <Row>
-        <Col sm="12" md={{ size: 6, offset: 3 }} >
+          <Col sm="12" md={{ size: 6, offset: 3 }}>
             <Card className="card-user ">
               <CardBody>
                 <CardText />
                 <div className="author">
-                  
                   <a href="#pablo" onClick={(e) => e.preventDefault()}>
                     <img
                       alt="..."
@@ -62,80 +59,11 @@ function UserProfile() {
               <CardFooter></CardFooter>
             </Card>
           </Col>
-          <Col sm="12" md={{ size:10, offset: 1 }}>
+          <Col sm="12" md={{ size: 10, offset: 1 }}>
             <Card>
-              <CardHeader>
-                <h5 className="title">Perfil de usuario</h5>
-              </CardHeader>
-              <CardBody>
-                <Form>
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>Username</label>
-                        <Input
-                          defaultValue="michael23"
-                          placeholder="Username"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="6">
-                      <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Input placeholder="mike@email.com" type="email" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>First Name</label>
-                        <Input
-                          defaultValue="Mike"
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="6">
-                      <FormGroup>
-                        <label>Last Name</label>
-                        <Input
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="8">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          cols="80"
-                          defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                            that two seat Lambo."
-                          placeholder="Here can be your description"
-                          rows="4"
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Form>
-              </CardBody>
-              <CardFooter>
-                <Button className="btn-fill" color="secondary" type="submit">
-                  Save
-                </Button>
-              </CardFooter>
+              <UserForm />
             </Card>
           </Col>
-          
         </Row>
       </div>
     </>

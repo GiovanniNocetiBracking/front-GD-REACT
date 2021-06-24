@@ -6,12 +6,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ContactUsForm() {
   return (
-    <div className="content">
+    <div className="content d-flex align-items-center ">
       <Row className="">
-        <Col sm="12" md={{ size: 6, offset: 3 }}>
+        <Col sm={{ size: 6, offset: 3 }} lg={{ size: 4, offset: 1 }}>
           <Contact />
         </Col>
-        <Col sm="12" md={{ size: 6, offset: 3 }}>
+        <Col sm={{ size: 6, offset: 3 }} lg={{ size: 4, offset: 1 }}>
           <Subscribe />
         </Col>
       </Row>
