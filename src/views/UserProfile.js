@@ -37,7 +37,32 @@ function UserProfile() {
     <>
       <div className="content">
         <Row>
-          <Col md="8">
+        <Col sm="12" md={{ size: 6, offset: 3 }} >
+            <Card className="card-user ">
+              <CardBody>
+                <CardText />
+                <div className="author">
+                  
+                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    <img
+                      alt="..."
+                      className="avatar"
+                      src={require("assets/img/emilyz.jpg").default}
+                    />
+                    <h5 className="title">Mike Andrew</h5>
+                  </a>
+                  <p className="description">Ceo/Co-Founder</p>
+                </div>
+                <div className="card-description">
+                  Do not be scared of the truth because we need to restart the
+                  human foundation in truth And I love you like Kanye loves
+                  Kanye I love Rick Owens’ bed design but the back is...
+                </div>
+              </CardBody>
+              <CardFooter></CardFooter>
+            </Card>
+          </Col>
+          <Col sm="12" md={{ size:10, offset: 1 }}>
             <Card>
               <CardHeader>
                 <h5 className="title">Perfil de usuario</h5>
@@ -104,40 +129,13 @@ function UserProfile() {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button className="btn-fill" color="primary" type="submit">
+                <Button className="btn-fill" color="secondary" type="submit">
                   Save
                 </Button>
               </CardFooter>
             </Card>
           </Col>
-          <Col md="4">
-            <Card className="card-user">
-              <CardBody>
-                <CardText />
-                <div className="author">
-                  <div className="block block-one" />
-                  <div className="block block-two" />
-                  <div className="block block-three" />
-                  <div className="block block-four" />
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    <img
-                      alt="..."
-                      className="avatar"
-                      src={require("assets/img/emilyz.jpg").default}
-                    />
-                    <h5 className="title">Mike Andrew</h5>
-                  </a>
-                  <p className="description">Ceo/Co-Founder</p>
-                </div>
-                <div className="card-description">
-                  Do not be scared of the truth because we need to restart the
-                  human foundation in truth And I love you like Kanye loves
-                  Kanye I love Rick Owens’ bed design but the back is...
-                </div>
-              </CardBody>
-              <CardFooter></CardFooter>
-            </Card>
-          </Col>
+          
         </Row>
       </div>
     </>
