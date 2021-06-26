@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
-  const { login } = useAuth();
+export default function ForgotPassword() {
+  const { forgotPassword } = useAuth();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
@@ -28,7 +28,6 @@ export default function Login() {
       .string()
       .email("Pruebe con un correo valido")
       .required("El campo email es requerido"),
-    password: yup.string().required("El campo contraseña es requerido"),
   });
 
   return (
@@ -43,15 +42,20 @@ export default function Login() {
           <Formik
             initialValues={{
               email: "",
-              password: "",
             }}
             validationSchema={validate}
             onSubmit={async (values, actions) => {
               setLoading(true);
               try {
-                const res = await login(values.email, values.password);
+                const res = await forgotPassword(values.email);
                 setLoading(false);
-                history.push("/");
+                toast.success(
+                  "Se le envio a su correo un link para que cree una nueva contraseña",
+                  {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                    className: "foo-bar",
+                  }
+                );
               } catch (error) {
                 console.log(error);
               }
@@ -61,7 +65,7 @@ export default function Login() {
               <>
                 <Card body>
                   <CardTitle>
-                    <h2>Inicio de sesion</h2>
+                    <h2>Crea una contraseña nueva</h2>
                   </CardTitle>
                   <FormF>
                     <TextField
@@ -70,23 +74,15 @@ export default function Login() {
                       type="text"
                       placeholder="Ingrese su correo"
                     />
-                    <TextField
-                      label="Contraseña"
-                      name="password"
-                      type="password"
-                      placeholder="Ingrese su contraseña"
-                    />
                     <Button
                       disabled={loading}
                       type="submit"
-                      className="mt-4 w-100"
+                      className="mt-5 w-100"
                     >
-                      Iniciar sesion!
+                      Resetear contraseña
                     </Button>
                     <div className="mt-3 d-flex justify-content-center">
-                      <Link to="/forgot-password">
-                        ¿Olvidaste tu contraseña?
-                      </Link>
+                      <Link to="/login">Iniciar sesion</Link>
                     </div>
                     {loading && (
                       <Backdrop className={classes.backdrop} open>

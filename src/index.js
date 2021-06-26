@@ -24,7 +24,8 @@ import NotFound from "./views/404";
 import { AuthProvider } from "./contexts/AuthContext";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
-import PrivateRoute from "./components/PrivateRoute";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import PrivateRoute from "./components/Auth/PrivateRoute";
 
 import "assets/scss/black-dashboard-react.scss";
 import "assets/demo/demo.css";
@@ -47,6 +48,7 @@ ReactDOM.render(
             <Redirect exact from="/" to="/admin/dashboard" />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
+            <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="*" component={NotFound} />
           </Switch>
         </BrowserRouter>
