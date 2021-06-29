@@ -18,51 +18,16 @@
 import React from "react";
 
 // reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  CardText,
-  Row,
-  Col,
-} from "reactstrap";
-import UserForm from "../components/Forms/UserProfile";
+import { Row, Col } from "reactstrap";
+import UserResume from "../components/User/UserResume";
 
 function UserProfile() {
   return (
     <>
       <div className="content">
         <Row>
-          <Col sm="12" md={{ size: 6, offset: 3 }}>
-            <Card className="card-user ">
-              <CardBody>
-                <CardText />
-                <div className="author">
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    <img
-                      alt="..."
-                      className="avatar"
-                      src={require("assets/img/emilyz.jpg").default}
-                    />
-                    <h5 className="title">Mike Andrew</h5>
-                  </a>
-                  <p className="description">Ceo/Co-Founder</p>
-                </div>
-                <div className="card-description">
-                  Do not be scared of the truth because we need to restart the
-                  human foundation in truth And I love you like Kanye loves
-                  Kanye I love Rick Owens’ bed design but the back is...
-                </div>
-              </CardBody>
-              <CardFooter></CardFooter>
-            </Card>
-          </Col>
-          <Col sm="12" md={{ size: 10, offset: 1 }}>
-            <Card>
-              <UserForm />
-            </Card>
+          <Col sm="12">
+            <UserResume />
           </Col>
         </Row>
       </div>

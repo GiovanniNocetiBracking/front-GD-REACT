@@ -29,12 +29,12 @@ export default function Contact() {
     email: yup
       .string()
       .email("Pruebe con un correo valido")
-      .required("El campo email es requerido"),
+      .required("El campo correo es requerido"),
     message: yup
       .string()
       .required("El campo mensaje es requerido")
-      .min(10, "El mensaje debe tener almenos 10 caracteres")
-      .max(500, "El mensaje debe tener como maximo 500 caracteres"),
+      .min(10, "El mensaje debe contener almenos 10 caracteres")
+      .max(500, "El mensaje debe contener como maximo 500 caracteres"),
   });
   return (
     <>

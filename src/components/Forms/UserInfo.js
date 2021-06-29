@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Card, CardText, CardTitle, Button, FormGroup } from "reactstrap";
+import { Card, CardText, CardTitle, Button } from "reactstrap";
+import { firestore } from "../Firebase/firebaseConfig";
+import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form as FormF } from "formik";
 import * as yup from "yup";
 import { TextField } from "./TextField";
@@ -16,39 +18,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function UserProfile() {
+  const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const validate = yup.object({
-    userName: yup.string(),
+    userName: yup
+      .string()
+      .min(5, "El nombre de usuario debe contener almenos 5 caracteres")
+      .max(25, "El nombre de usuario debe tener como maximo 500 caracteres"),
     email: yup.string().email("Pruebe con un correo valido"),
-    firstName: yup.string(),
-    lastName: yup.string(),
+    firstName: yup
+      .string()
+      .min(5, "El nombre debe contener almenos 5 caracteres")
+      .max(25, "El nombre debe contener como maximo 500 caracteres"),
+    lastName: yup
+      .string()
+      .min(5, "El apellido debe contener almenos 5 caracteres")
+      .max(25, "El apellido debe contener como maximo 500 caracteres"),
     about: yup
       .string()
-      .min(10, "El mensaje debe tener almenos 10 caracteres")
-      .max(700, "El mensaje debe tener como maximo 500 caracteres"),
+      .min(10, "El mensaje debe contener almenos 10 caracteres")
+      .max(700, "El mensaje debe contener como maximo 500 caracteres"),
   });
+
   return (
     <>
       <Formik
         initialValues={{
           userName: "",
-          email: "",
+          email: currentUser.email,
           firstName: "",
           lastName: "",
           about: "",
         }}
         validationSchema={validate}
+        onSubmit={async (values, actions) => {
+          setLoading(true);
+          try {
+            actions.resetForm();
+            setLoading(false);
+          } catch (error) {
+            console.log(error);
+          }
+        }}
       >
         {(formik) => (
           <Card body>
-            <CardTitle>
-              <h4>Informacion de Usuario</h4>
-            </CardTitle>
-            <CardText>
-              Esta informacion nos ayuda a conocerte brevemente y nos permite
-              manejar de mejor manera tus incidencias
-            </CardText>
             <FormF className="mt-4">
               <div className="row">
                 <div className="col-sm-12 col-md-6">
@@ -65,6 +80,7 @@ export default function UserProfile() {
                     name="email"
                     type="text"
                     placeholder="Correo"
+                    disabled
                   />
                 </div>
               </div>
@@ -91,7 +107,7 @@ export default function UserProfile() {
                 label="Acerca de mi empresa u hogar"
                 type="textarea"
                 name="about"
-                placeholder="Escribe una breve descripcion de tu empresa o de tu hogar, la informacion que nos brinde sera de utilidad para llevar de mejor manera la gestion de un posible incidente."
+                placeholder={`Escribe una breve descripcion de tu empresa o de tu hogar, la informacion que nos brinde sera de utilidad para llevar de mejor manera la gestion de un posible incidente.`}
               />
 
               <Button disabled={loading} type="submit" className="mt-4">

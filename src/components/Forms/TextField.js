@@ -11,12 +11,19 @@ export const TextField = ({ label, placeholder, ...props }) => {
       </Label>
       <Col sm={12}>
         <Input
+          className={`form-control shadow-none ${
+            meta.touched && meta.error && "is-invalid"
+          }`}
           type="text"
           placeholder={placeholder}
           {...field}
           {...props}
         ></Input>
-        <ErrorMessage component="div" name={field.name} />
+        <ErrorMessage
+          component="div"
+          name={field.name}
+          className="text-danger mt-2"
+        />
       </Col>
     </>
   );
