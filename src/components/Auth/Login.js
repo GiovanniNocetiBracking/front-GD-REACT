@@ -46,14 +46,19 @@ export default function Login() {
               password: "",
             }}
             validationSchema={validate}
-            onSubmit={async (values, actions) => {
+            onSubmit={async (values) => {
               setLoading(true);
               try {
-                const res = await login(values.email, values.password);
+                await login(values.email, values.password);
                 setLoading(false);
                 history.push("/");
               } catch (error) {
-                console.log(error);
+                setLoading(false);
+
+                toast.error(error.message, {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                  className: "foo-bar",
+                });
               }
             }}
           >

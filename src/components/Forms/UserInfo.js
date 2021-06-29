@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardText, CardTitle, Button } from "reactstrap";
+import { Card, Button } from "reactstrap";
 import { firestore } from "../Firebase/firebaseConfig";
 import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form as FormF } from "formik";
@@ -55,10 +55,29 @@ export default function UserProfile() {
         onSubmit={async (values, actions) => {
           setLoading(true);
           try {
-            actions.resetForm();
-            setLoading(false);
+            firestore
+              .collection("userInfo")
+              .doc(currentUser.uid)
+              .set({
+                userName: values.userName,
+                lastName: values.lastName,
+                firstName: values.firstName,
+                about: values.about,
+              })
+              .then(() => {
+                toast.success("Informacion editada", {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                  className: "foo-bar",
+                });
+                actions.resetForm();
+                setLoading(false);
+              });
           } catch (error) {
-            console.log(error);
+            toast.error(error.message, {
+              position: toast.POSITION.BOTTOM_RIGHT,
+              className: "foo-bar",
+            });
+            setLoading(false);
           }
         }}
       >

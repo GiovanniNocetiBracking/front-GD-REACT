@@ -50,19 +50,20 @@ export default function Contact() {
           setLoading(true);
           const apiUrl = process.env.REACT_APP_URL_API;
           try {
-            const res = await axios
-              .post(apiUrl + "/landing/contactUs", values)
-              .then(() => {
-                console.log(res);
-                toast.success("Mensaje enviado", {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                  className: "foo-bar",
-                });
+            await axios.post(apiUrl + "/landing/contactUs", values).then(() => {
+              toast.success("Mensaje enviado", {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                className: "foo-bar",
               });
+            });
             actions.resetForm();
             setLoading(false);
           } catch (error) {
-            console.log(error);
+            toast.error("Envio fallido", {
+              position: toast.POSITION.BOTTOM_RIGHT,
+              className: "foo-bar",
+            });
+            setLoading(false);
           }
         }}
       >

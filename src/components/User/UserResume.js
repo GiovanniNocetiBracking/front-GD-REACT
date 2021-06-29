@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardBody, CardFooter, CardText, Button } from "reactstrap";
 import { Modal } from "react-bootstrap";
-import UserForm from "../Forms/UserInfo";
+import UserInfo from "../Forms/UserInfo";
 
 export default function UserResume() {
   const [openModal, setOpenModal] = useState(false);
@@ -49,7 +49,7 @@ export default function UserResume() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <UserForm />
+          <UserInfo />
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>

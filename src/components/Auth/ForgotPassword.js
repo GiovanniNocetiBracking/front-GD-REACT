@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { Card, CardTitle, Button, Container } from "reactstrap";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { Formik, Form as FormF } from "formik";
 import * as yup from "yup";
@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ForgotPassword() {
   const { forgotPassword } = useAuth();
-  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const validate = yup.object({
@@ -47,7 +46,7 @@ export default function ForgotPassword() {
             onSubmit={async (values, actions) => {
               setLoading(true);
               try {
-                const res = await forgotPassword(values.email);
+                await forgotPassword(values.email);
                 setLoading(false);
                 toast.success(
                   "Se le envio a su correo un link para que cree una nueva contraseña",
@@ -56,8 +55,15 @@ export default function ForgotPassword() {
                     className: "foo-bar",
                   }
                 );
+
+                actions.resetForm();
               } catch (error) {
-                console.log(error);
+                setLoading(false);
+
+                toast.error(error.message, {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                  className: "foo-bar",
+                });
               }
             }}
           >

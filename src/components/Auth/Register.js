@@ -52,11 +52,16 @@ export default function Register() {
             onSubmit={async (values, actions) => {
               setLoading(true);
               try {
-                const res = await register(values.email, values.password);
+                await register(values.email, values.password);
                 setLoading(false);
                 history.push("/");
               } catch (error) {
-                console.log(error);
+                setLoading(false);
+
+                toast.error(error.message, {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                  className: "foo-bar",
+                });
               }
             }}
           >
