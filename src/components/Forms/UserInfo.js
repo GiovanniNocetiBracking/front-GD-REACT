@@ -47,14 +47,16 @@ export default function UserProfile() {
       .doc(currentUser.uid)
       .get()
       .then((doc) => {
-        setuserInfo({ ...doc.data() });
+        console.log("consola 1", doc.data());
+        setuserInfo(doc.data());
       });
-  }, []);
-  console.log(userInfo);
+  }, [currentUser]);
+  console.log("consola 2", userInfo);
 
   return (
     <>
       <Formik
+        enableReinitialize={true}
         initialValues={{
           userName: userInfo.userName,
           lastName: userInfo.lastName,
