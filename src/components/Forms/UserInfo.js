@@ -6,7 +6,7 @@ import { Formik, Form as FormF } from "formik";
 import * as yup from "yup";
 import { TextField } from "./TextField";
 import { TextArea } from "./TextArea";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
   },
 }));
-export default function UserProfile() {
+export default function UserProfile({ onHide, Alerta }) {
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [userInfo, setuserInfo] = useState({});
@@ -42,26 +42,25 @@ export default function UserProfile() {
       .max(700, "El mensaje debe contener como maximo 500 caracteres"),
   });
   useEffect(() => {
+    setLoading(true);
     firestore
       .collection("userInfo")
       .doc(currentUser.uid)
-      .get()
-      .then((doc) => {
-        console.log("consola 1", doc.data());
+      .onSnapshot((doc) => {
         setuserInfo(doc.data());
+        setLoading(false);
       });
   }, [currentUser]);
-  console.log("consola 2", userInfo);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={{
-          userName: userInfo.userName,
-          lastName: userInfo.lastName,
-          firstName: userInfo.firstName,
-          about: userInfo.about,
+          userName: userInfo.userName || "",
+          lastName: userInfo.lastName || "",
+          firstName: userInfo.firstName || "",
+          about: userInfo.about || "",
           email: currentUser.email,
         }}
         validationSchema={validate}
@@ -78,10 +77,8 @@ export default function UserProfile() {
                 about: values.about,
               })
               .then(() => {
-                toast.success("Informacion editada", {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                  className: "foo-bar",
-                });
+                onHide();
+                Alerta();
                 actions.resetForm();
                 setLoading(false);
               });
@@ -150,7 +147,6 @@ export default function UserProfile() {
                   <CircularProgress color="inherit" />
                 </Backdrop>
               )}
-              <ToastContainer />
             </FormF>
           </Card>
         )}

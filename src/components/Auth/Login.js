@@ -42,8 +42,8 @@ export default function Login() {
         <div className="w-100" style={{ maxWidth: "500px" }}>
           <Formik
             initialValues={{
-              email: "",
-              password: "",
+              email: "test@test.com",
+              password: "123123123",
             }}
             validationSchema={validate}
             onSubmit={async (values) => {
