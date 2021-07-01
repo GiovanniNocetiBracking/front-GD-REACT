@@ -39,7 +39,7 @@ function Dashboard() {
     smokeData.on("value", (snapshot) => {
       setSmoke(snapshot.val());
     });
-  }, [glp, co, smoke]);
+  }, []);
   return (
     <>
       <div className="content">
@@ -54,7 +54,14 @@ function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <Gauge label="GLP" valor={glp} />
+                <Gauge
+                  label="GLP"
+                  valor={glp}
+                  yellowFrom={50}
+                  yellowTo={75}
+                  redFrom={75}
+                  redTo={100}
+                />
               </CardBody>
             </Card>
           </Col>
@@ -68,7 +75,14 @@ function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <Gauge label="GLP" valor={co} />
+                <Gauge
+                  label="Humo"
+                  valor={co}
+                  yellowFrom={50}
+                  yellowTo={75}
+                  redFrom={75}
+                  redTo={100}
+                />
               </CardBody>
             </Card>
           </Col>
@@ -82,7 +96,14 @@ function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <Gauge label="GLP" valor={smoke} />
+                <Gauge
+                  label="Co"
+                  valor={smoke}
+                  yellowFrom={50}
+                  yellowTo={75}
+                  redFrom={75}
+                  redTo={100}
+                />
               </CardBody>
             </Card>
           </Col>

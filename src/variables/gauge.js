@@ -1,7 +1,14 @@
 import React from "react";
 import { Chart } from "react-google-charts";
 
-export default function gauge({ label, valor }) {
+export default function gauge({
+  label,
+  valor,
+  yellowTo,
+  yellowFrom,
+  redTo,
+  redFrom,
+}) {
   return (
     <>
       <Chart
@@ -14,10 +21,10 @@ export default function gauge({ label, valor }) {
           [label, valor],
         ]}
         options={{
-          redFrom: 90,
-          redTo: 100,
-          yellowFrom: 75,
-          yellowTo: 90,
+          redFrom: redFrom,
+          redTo: redTo,
+          yellowFrom: yellowFrom,
+          yellowTo: yellowTo,
           minorTicks: 10,
         }}
       />

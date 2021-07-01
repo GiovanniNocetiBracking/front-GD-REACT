@@ -36,7 +36,7 @@ export default function UserResume() {
               <img
                 alt="..."
                 className="avatar"
-                src={require("assets/img/emilyz.jpg").default}
+                src={require("assets/img/anime3.png").default}
               />
               <h5 className="title">{userInfo.userName}</h5>
             </a>
