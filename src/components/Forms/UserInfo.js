@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Button } from "reactstrap";
 import { firestore } from "../Firebase/firebaseConfig";
 import { useAuth } from "../../contexts/AuthContext";
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UserProfile() {
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [userInfo, setuserInfo] = useState({});
   const classes = useStyles();
   const validate = yup.object({
     userName: yup
@@ -40,19 +41,29 @@ export default function UserProfile() {
       .min(10, "El mensaje debe contener almenos 10 caracteres")
       .max(700, "El mensaje debe contener como maximo 500 caracteres"),
   });
+  useEffect(() => {
+    firestore
+      .collection("userInfo")
+      .doc(currentUser.uid)
+      .get()
+      .then((doc) => {
+        setuserInfo({ ...doc.data() });
+      });
+  }, []);
+  console.log(userInfo);
 
   return (
     <>
       <Formik
         initialValues={{
-          userName: "",
+          userName: userInfo.userName,
+          lastName: userInfo.lastName,
+          firstName: userInfo.firstName,
+          about: userInfo.about,
           email: currentUser.email,
-          firstName: "",
-          lastName: "",
-          about: "",
         }}
         validationSchema={validate}
-        onSubmit={async (values, actions) => {
+        onSubmit={(values, actions) => {
           setLoading(true);
           try {
             firestore
