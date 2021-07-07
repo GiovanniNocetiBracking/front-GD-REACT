@@ -15,4 +15,15 @@ const firebaseConfig = firebase.initializeApp({
 export const auth = firebaseConfig.auth();
 export const database = firebaseConfig.database();
 export const firestore = firebaseConfig.firestore();
+export const socialMediaAuth = (provider) => {
+  return firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((res) => {
+      return res.user;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
 export default firebaseConfig;

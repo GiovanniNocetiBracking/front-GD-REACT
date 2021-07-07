@@ -53,7 +53,7 @@ function Dashboard() {
                   {glp}
                 </CardTitle>
               </CardHeader>
-              <CardBody>
+              <CardBody className="px-4">
                 <Gauge
                   label="GLP"
                   valor={glp}
@@ -74,7 +74,8 @@ function Dashboard() {
                   {co}
                 </CardTitle>
               </CardHeader>
-              <CardBody>
+
+              <CardBody className="px-4">
                 <Gauge
                   label="Humo"
                   valor={co}
@@ -95,7 +96,9 @@ function Dashboard() {
                   {smoke}
                 </CardTitle>
               </CardHeader>
-              <CardBody>
+
+              <CardBody className="px-4">
+                {" "}
                 <Gauge
                   label="Co"
                   valor={smoke}

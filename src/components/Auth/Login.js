@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
+import ButtonSocialMedia from "./ButtonSocialMedia";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -65,41 +66,51 @@ export default function Login() {
             {(formik) => (
               <>
                 <Card body>
-                  <CardTitle>
-                    <h2>Inicio de sesion</h2>
-                  </CardTitle>
-                  <FormF>
-                    <TextField
-                      label="Correo"
-                      name="email"
-                      type="text"
-                      placeholder="Ingrese su correo"
-                    />
-                    <TextField
-                      label="Contraseña"
-                      name="password"
-                      type="password"
-                      placeholder="Ingrese su contraseña"
-                    />
-                    <Button
-                      disabled={loading}
-                      type="submit"
-                      className="mt-4 w-100"
-                    >
-                      Iniciar sesion!
-                    </Button>
-                    <div className="mt-3 d-flex justify-content-center">
-                      <Link to="/forgot-password">
-                        ¿Olvidaste tu contraseña?
-                      </Link>
-                    </div>
-                    {loading && (
-                      <Backdrop className={classes.backdrop} open>
-                        <CircularProgress color="inherit" />
-                      </Backdrop>
-                    )}
-                    <ToastContainer />
-                  </FormF>
+                  <div>
+                    <ButtonSocialMedia />
+                  </div>
+                  <div className="dropdown-divider py-3"></div>
+                  <div>
+                    <Card>
+                      <CardTitle>
+                        <h3 className="text-center py-2">
+                          Inicio de sesion con credenciales
+                        </h3>
+                      </CardTitle>
+                      <FormF>
+                        <TextField
+                          label="Correo"
+                          name="email"
+                          type="text"
+                          placeholder="Ingrese su correo"
+                        />
+                        <TextField
+                          label="Contraseña"
+                          name="password"
+                          type="password"
+                          placeholder="Ingrese su contraseña"
+                        />
+                        <Button
+                          disabled={loading}
+                          type="submit"
+                          className="mt-4 w-100"
+                        >
+                          Iniciar sesion!
+                        </Button>
+                        <div className="py-3 d-flex justify-content-center">
+                          <Link to="/forgot-password">
+                            ¿Olvidaste tu contraseña?
+                          </Link>
+                        </div>
+                        {loading && (
+                          <Backdrop className={classes.backdrop} open>
+                            <CircularProgress color="inherit" />
+                          </Backdrop>
+                        )}
+                        <ToastContainer />
+                      </FormF>
+                    </Card>
+                  </div>
                 </Card>
               </>
             )}
