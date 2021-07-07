@@ -66,6 +66,10 @@ export default function Login() {
             {(formik) => (
               <>
                 <Card body>
+                  <div className="text-center">
+                    <h1>Inicio de sesion</h1>
+                  </div>
+                  <div className="dropdown-divider py-3"></div>
                   <div>
                     <ButtonSocialMedia />
                   </div>
@@ -73,9 +77,9 @@ export default function Login() {
                   <div>
                     <Card>
                       <CardTitle>
-                        <h3 className="text-center py-2">
+                        <h4 className="text-center py-2">
                           Inicio de sesion con credenciales
-                        </h3>
+                        </h4>
                       </CardTitle>
                       <FormF>
                         <TextField

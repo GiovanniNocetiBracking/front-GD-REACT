@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/firestore";
 import "firebase/auth";
+
 const firebaseConfig = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_DOMAIN,
@@ -15,15 +16,6 @@ const firebaseConfig = firebase.initializeApp({
 export const auth = firebaseConfig.auth();
 export const database = firebaseConfig.database();
 export const firestore = firebaseConfig.firestore();
-export const socialMediaAuth = (provider) => {
-  return firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then((res) => {
-      return res.user;
-    })
-    .catch((error) => {
-      return error;
-    });
-};
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+
 export default firebaseConfig;

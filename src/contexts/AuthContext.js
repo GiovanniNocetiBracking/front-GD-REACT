@@ -18,19 +18,56 @@ export function AuthProvider({ children }) {
         firestore.collection("userInfo").doc(cred.user.uid).set({
           userName: "",
           lastName: "",
-          name: "",
+          firstName: "",
           about: "",
         });
       });
   }
   function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
+    return auth
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   function logOut() {
-    return auth.signOut();
+    return auth
+      .signOut()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   function forgotPassword(email) {
-    return auth.sendPasswordResetEmail(email);
+    return auth
+      .sendPasswordResetEmail(email)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function signInWhitGoogle(provider) {
+    return auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        firestore.collection("userInfo").doc(result.user.uid).set({
+          userName: result.additionalUserInfo.profile.name,
+          lastName: result.additionalUserInfo.profile.family_name,
+          firstName: result.additionalUserInfo.profile.given_name,
+          about: "",
+        });
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   useEffect(() => {
@@ -46,6 +83,7 @@ export function AuthProvider({ children }) {
     register,
     logOut,
     forgotPassword,
+    signInWhitGoogle,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
