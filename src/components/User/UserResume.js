@@ -38,14 +38,14 @@ export default function UserResume() {
                 className="avatar"
                 src={require("assets/img/anime3.png").default}
               />
-              <h5 className="title">{userInfo.userName}</h5>
+              <h5 className="title">{userInfo.userName || ""}</h5>
             </a>
             <p>
-              {userInfo.firstName} {userInfo.lastName}
+              {userInfo.firstName || ""} {userInfo.lastName || ""}
             </p>
           </div>
           <div className="card-description d-flex justify-content-center">
-            {userInfo.about}
+            {userInfo.about || ""}
           </div>
         </CardBody>
         <CardFooter>

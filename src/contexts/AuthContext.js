@@ -37,10 +37,10 @@ export function AuthProvider({ children }) {
     return auth
       .signOut()
       .then((result) => {
-        console.log(result);
+        console.log("console then logOut", result);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("console error logOut", error);
       });
   }
   function forgotPassword(email) {
@@ -53,16 +53,55 @@ export function AuthProvider({ children }) {
         console.log(error);
       });
   }
-  function signInWhitGoogle(provider) {
+  function signInWithGoogle(provider) {
+    return auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        console.log(currentUser);
+        firestore
+          .collection("userInfo")
+          .doc(result.user.uid)
+          .set({
+            userName: result.additionalUserInfo.profile.name || "",
+            lastName: result.additionalUserInfo.profile.family_name || "",
+            firstName: result.additionalUserInfo.profile.given_name || "",
+            about: "",
+          });
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function signInWithFacebook(provider) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
         firestore.collection("userInfo").doc(result.user.uid).set({
-          userName: result.additionalUserInfo.profile.name,
-          lastName: result.additionalUserInfo.profile.family_name,
-          firstName: result.additionalUserInfo.profile.given_name,
+          userName: "",
+          lastName: "",
+          firstName: "",
           about: "",
         });
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function signInWithGitHub(provider) {
+    return auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        firestore
+          .collection("userInfo")
+          .doc(result.user.uid)
+          .set({
+            userName: result.additionalUserInfo.profile.name || "",
+            lastName: result.additionalUserInfo.profile.family_name || "",
+            firstName: result.additionalUserInfo.profile.given_name || "",
+            about: "",
+          });
         console.log(result);
       })
       .catch((error) => {
@@ -83,7 +122,9 @@ export function AuthProvider({ children }) {
     register,
     logOut,
     forgotPassword,
-    signInWhitGoogle,
+    signInWithGoogle,
+    signInWithFacebook,
+    signInWithGitHub,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
