@@ -1,36 +1,36 @@
-import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { Card, CardTitle, Button, Container } from "reactstrap";
-import { Link, useHistory } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-import { Formik, Form as FormF } from "formik";
-import * as yup from "yup";
-import { TextField } from "../Forms/TextField";
-import { ToastContainer, toast } from "react-toastify";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
-import ButtonSocialMedia from "./ButtonSocialMedia";
+import React, { useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
+import { Card, CardTitle, Button, Container } from "reactstrap"
+import { Link, useHistory } from "react-router-dom"
+import "react-toastify/dist/ReactToastify.css"
+import { Formik, Form as FormF } from "formik"
+import * as yup from "yup"
+import { TextField } from "../Forms/TextField"
+import { ToastContainer, toast } from "react-toastify"
+import Backdrop from "@material-ui/core/Backdrop"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
+import ButtonSocialMedia from "./ButtonSocialMedia"
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
-}));
+}))
 
 export default function Login() {
-  const { login } = useAuth();
-  const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const classes = useStyles();
+  const { login } = useAuth()
+  const history = useHistory()
+  const [loading, setLoading] = useState(false)
+  const classes = useStyles()
   const validate = yup.object({
     email: yup
       .string()
       .email("Pruebe con un correo valido")
       .required("El campo email es requerido"),
     password: yup.string().required("El campo contraseña es requerido"),
-  });
+  })
 
   return (
     <>
@@ -48,18 +48,18 @@ export default function Login() {
             }}
             validationSchema={validate}
             onSubmit={async (values) => {
-              setLoading(true);
+              setLoading(true)
               try {
-                await login(values.email, values.password);
-                setLoading(false);
-                history.push("/");
+                await login(values.email, values.password)
+                setLoading(false)
+                history.push("/")
               } catch (error) {
-                setLoading(false);
-
+                setLoading(false)
+                console.log("catch login", error)
                 toast.error(error.message, {
                   position: toast.POSITION.BOTTOM_RIGHT,
                   className: "foo-bar",
-                });
+                })
               }
             }}
           >
@@ -125,5 +125,5 @@ export default function Login() {
         </div>
       </Container>
     </>
-  );
+  )
 }

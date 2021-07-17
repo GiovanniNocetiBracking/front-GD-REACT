@@ -11,6 +11,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState()
   const [loading, setLoading] = useState(true)
+  const [userInfo, setuserInfo] = useState({})
 
   async function register(email, password) {
     return await auth
@@ -32,6 +33,7 @@ export function AuthProvider({ children }) {
       })
       .catch((error) => {
         console.log(error)
+        return error
       })
   }
   function logOut() {
@@ -58,6 +60,15 @@ export function AuthProvider({ children }) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
+        firestore
+          .collection("userInfo")
+          .doc(result.user.uid)
+          .set({
+            userName: userInfo.userName || "",
+            lastName: userInfo.lastName || "",
+            firstName: userInfo.firstName || "",
+            about: userInfo.about || "",
+          })
         console.log(result)
       })
       .catch((error) => {
@@ -68,6 +79,15 @@ export function AuthProvider({ children }) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
+        firestore
+          .collection("userInfo")
+          .doc(result.user.uid)
+          .set({
+            userName: userInfo.userName || "",
+            lastName: userInfo.lastName || "",
+            firstName: userInfo.firstName || "",
+            about: userInfo.about || "",
+          })
         console.log(result)
       })
       .catch((error) => {
@@ -78,13 +98,21 @@ export function AuthProvider({ children }) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
+        firestore
+          .collection("userInfo")
+          .doc(result.user.uid)
+          .set({
+            userName: userInfo.userName || "",
+            lastName: userInfo.lastName || "",
+            firstName: userInfo.firstName || "",
+            about: userInfo.about || "",
+          })
         console.log(result)
       })
       .catch((error) => {
         console.log(error)
       })
   }
-
   useEffect(() => {
     const unsuscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user)
@@ -93,6 +121,16 @@ export function AuthProvider({ children }) {
     })
     return unsuscribe
   }, [])
+
+  useEffect(() => {
+    currentUser &&
+      firestore
+        .collection("userInfo")
+        .doc(currentUser.uid)
+        .onSnapshot((doc) => {
+          setuserInfo(doc.data())
+        })
+  }, [currentUser])
 
   const value = {
     currentUser,

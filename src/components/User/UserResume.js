@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardBody, CardFooter, CardText, Button } from "reactstrap";
-import { Modal } from "react-bootstrap";
-import { firestore } from "../Firebase/firebaseConfig";
-import UserInfo from "../Forms/UserInfo";
-import { ToastContainer, toast } from "react-toastify";
-import { useAuth } from "../../contexts/AuthContext";
+import React, { useState, useEffect } from "react"
+import { Card, CardBody, CardFooter, CardText, Button } from "reactstrap"
+import { Modal } from "react-bootstrap"
+import { firestore } from "../Firebase/firebaseConfig"
+import UserInfo from "../Forms/UserInfo"
+import { ToastContainer, toast } from "react-toastify"
+import { useAuth } from "../../contexts/AuthContext"
 
 export default function UserResume() {
-  const [openModal, setOpenModal] = useState(false);
-  const [userInfo, setuserInfo] = useState({});
-  const { currentUser } = useAuth();
-  const handleClose = () => setOpenModal(false);
-  const handleShow = () => setOpenModal(true);
+  const [openModal, setOpenModal] = useState(false)
+  const [userInfo, setuserInfo] = useState({})
+  const { currentUser } = useAuth()
+  const handleClose = () => setOpenModal(false)
+  const handleShow = () => setOpenModal(true)
   const toastForForm = () => {
     toast.success("Informacion editada", {
       position: toast.POSITION.BOTTOM_RIGHT,
       className: "foo-bar",
-    });
-  };
+    })
+  }
   useEffect(() => {
     firestore
       .collection("userInfo")
       .doc(currentUser.uid)
       .onSnapshot((doc) => {
-        setuserInfo(doc.data());
-      });
-  }, [currentUser]);
+        setuserInfo(doc.data())
+      })
+  }, [currentUser])
   return (
     <>
       <Card className="card-user">
@@ -36,7 +36,10 @@ export default function UserResume() {
               <img
                 alt="..."
                 className="avatar"
-                src={require("assets/img/anime3.png").default}
+                src={
+                  currentUser.photoURL ||
+                  require("assets/img/anime3.png").default
+                }
               />
               <h5 className="title">{userInfo.userName || ""}</h5>
             </a>
@@ -75,5 +78,5 @@ export default function UserResume() {
       </Modal>
       <ToastContainer />
     </>
-  );
+  )
 }
