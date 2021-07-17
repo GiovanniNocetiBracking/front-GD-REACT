@@ -15,11 +15,11 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Link, useHistory } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import React from "react"
+import { Link, useHistory } from "react-router-dom"
+import { useAuth } from "../../contexts/AuthContext"
 // nodejs library that concatenates classes
-import classNames from "classnames";
+import classNames from "classnames"
 
 // reactstrap components
 import {
@@ -37,54 +37,55 @@ import {
   Modal,
   NavbarToggler,
   ModalHeader,
-} from "reactstrap";
+} from "reactstrap"
 
 function AdminNavbar(props) {
-  const [collapseOpen, setcollapseOpen] = React.useState(false);
-  const [modalSearch, setmodalSearch] = React.useState(false);
-  const [color, setcolor] = React.useState("navbar-transparent");
-  const { logOut } = useAuth();
-  const history = useHistory();
+  const [collapseOpen, setcollapseOpen] = React.useState(false)
+  const [modalSearch, setmodalSearch] = React.useState(false)
+  const [color, setcolor] = React.useState("navbar-transparent")
+  const { logOut } = useAuth()
+  const history = useHistory()
 
   React.useEffect(() => {
-    window.addEventListener("resize", updateColor);
+    window.addEventListener("resize", updateColor)
     // Specify how to clean up after this effect:
     return function cleanup() {
-      window.removeEventListener("resize", updateColor);
-    };
-  });
+      window.removeEventListener("resize", updateColor)
+    }
+  })
   // function that adds color white/transparent to the navbar on resize (this is for the collapse)
   const updateColor = () => {
     if (window.innerWidth < 993 && collapseOpen) {
-      setcolor("bg-white");
+      setcolor("bg-white")
     } else {
-      setcolor("navbar-transparent");
+      setcolor("navbar-transparent")
     }
-  };
+  }
   // this function opens and closes the collapse on small devices
   const toggleCollapse = () => {
     if (collapseOpen) {
-      setcolor("navbar-transparent");
+      setcolor("navbar-transparent")
     } else {
-      setcolor("bg-white");
+      setcolor("bg-white")
     }
-    setcollapseOpen(!collapseOpen);
-  };
+    setcollapseOpen(!collapseOpen)
+  }
   // this function is to open the Search modal
   const toggleModalSearch = () => {
-    setmodalSearch(!modalSearch);
-  };
+    setmodalSearch(!modalSearch)
+  }
 
   async function handleLogOut() {
     try {
-      await logOut();
-      history.push("/login");
+      await logOut().then(() => {
+        history.push("/login")
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
-  const { currentUser } = useAuth();
+  const { currentUser } = useAuth()
   return (
     <>
       <Navbar className={classNames("navbar-absolute", color)} expand="lg">
@@ -165,7 +166,7 @@ function AdminNavbar(props) {
         </ModalHeader>
       </Modal>
     </>
-  );
+  )
 }
 
-export default AdminNavbar;
+export default AdminNavbar

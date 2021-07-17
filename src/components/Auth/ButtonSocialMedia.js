@@ -1,44 +1,44 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import { Card, Button, CardBody, Row, Col } from "reactstrap";
+import React from "react"
+import { useHistory } from "react-router-dom"
+import { Card, Button, CardBody, Row, Col } from "reactstrap"
 
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext"
 import {
   googleProvider,
   facebookProvider,
   gitHubProvider,
-} from "components/Firebase/firebaseConfig";
+} from "components/Firebase/firebaseConfig"
 
 export default function ButtonSocialMedia() {
-  const { signInWithGoogle, signInWithFacebook, signInWithGitHub } = useAuth();
-  const history = useHistory();
+  const { signInWithGoogle, signInWithFacebook, signInWithGitHub } = useAuth()
+  const history = useHistory()
   const handleGoogleLogin = async () => {
     try {
       await signInWithGoogle(googleProvider).then(() => {
-        history.push("/");
-      });
+        history.push("/")
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
   const handleFacebookLogin = async () => {
     try {
       await signInWithFacebook(facebookProvider).then(() => {
-        history.push("/");
-      });
+        history.push("/")
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
   const handleGitHubLogin = async () => {
     try {
       await signInWithGitHub(gitHubProvider).then(() => {
-        history.push("/");
-      });
+        history.push("/")
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <>
@@ -64,5 +64,5 @@ export default function ButtonSocialMedia() {
         </CardBody>
       </Card>
     </>
-  );
+  )
 }
