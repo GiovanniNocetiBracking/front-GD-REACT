@@ -36,62 +36,24 @@ export function AuthProvider({ children }) {
     return auth.sendPasswordResetEmail(email)
   }
   function signInWithGoogle(provider) {
-    return auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        firestore.collection("userInfo").doc(result.user.uid).set({
-          userName: "",
-          lastName: "",
-          firstName: "",
-          about: "",
-        })
-        console.log(result)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    return auth.signInWithPopup(provider).then((result) => {
+      setLoading(false)
+    })
   }
   function signInWithFacebook(provider) {
-    return auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        firestore.collection("userInfo").doc(result.user.uid).set({
-          userName: "",
-          lastName: "",
-          firstName: "",
-          about: "",
-        })
-        console.log(result)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    return auth.signInWithPopup(provider).then((result) => {
+      setLoading(false)
+    })
   }
   function signInWithGitHub(provider) {
-    return auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        firestore.collection("userInfo").doc(result.user.uid).set({
-          userName: "",
-          lastName: "",
-          firstName: "",
-          about: "",
-        })
-        setLoading(false)
-
-        console.log(result)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    return auth.signInWithPopup(provider).then((result) => {
+      setLoading(false)
+    })
   }
   useEffect(() => {
     const unsuscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user)
       setLoading(false)
-      console.log("useEffect", user)
     })
     return unsuscribe
   }, [])

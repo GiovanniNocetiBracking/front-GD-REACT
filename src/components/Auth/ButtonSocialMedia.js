@@ -28,8 +28,22 @@ export default function ButtonSocialMedia() {
     setLoading(true)
     try {
       await signInWithGoogle(googleProvider)
-      setLoading(false)
-      history.push("/")
+        .then((res) => {
+          setLoading(false)
+          toast.success("Ingreso exitoso", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+
+          setTimeout(() => history.push("/"), 1500)
+        })
+        .catch((error) => {
+          setLoading(false)
+          toast.error(error.message, {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+        })
     } catch (error) {
       console.log(error)
     }
@@ -45,7 +59,7 @@ export default function ButtonSocialMedia() {
             className: "foo-bar",
           })
 
-          setTimeout(() => history.push("/"), 3500)
+          setTimeout(() => history.push("/"), 1500)
         })
         .catch((error) => {
           setLoading(false)
@@ -62,8 +76,22 @@ export default function ButtonSocialMedia() {
     setLoading(true)
     try {
       await signInWithGitHub(gitHubProvider)
-      setLoading(false)
-      history.push("/")
+        .then((res) => {
+          setLoading(false)
+          toast.success("Ingreso exitoso", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+
+          setTimeout(() => history.push("/"), 1500)
+        })
+        .catch((error) => {
+          setLoading(false)
+          toast.error(error.message, {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+        })
     } catch (error) {
       console.log(error)
     }
