@@ -6,12 +6,26 @@ import UserInfo from "../Forms/UserInfo"
 import { ToastContainer, toast } from "react-toastify"
 import { useAuth } from "../../contexts/AuthContext"
 import useWindowSize from "../../hooks/useWindowSize"
+import Backdrop from "@material-ui/core/Backdrop"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
+
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}))
 
 export default function UserResume() {
   const size = useWindowSize()
+  const { currentUser } = useAuth()
+  const classes = useStyles()
+
   const [openModal, setOpenModal] = useState(false)
   const [userInfo, setuserInfo] = useState({})
-  const { currentUser } = useAuth()
+  const [loading, setLoading] = useState(false)
+
   const handleClose = () => setOpenModal(false)
   const handleShow = () => setOpenModal(true)
   const toastForForm = () => {
@@ -21,11 +35,13 @@ export default function UserResume() {
     })
   }
   useEffect(() => {
+    setLoading(true)
     firestore
       .collection("userInfo")
       .doc(currentUser.uid)
       .onSnapshot((doc) => {
         setuserInfo(doc.data())
+        setLoading(false)
       })
   }, [currentUser])
   return (
@@ -144,6 +160,11 @@ export default function UserResume() {
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
+      {loading && (
+        <Backdrop className={classes.backdrop} open>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
       <ToastContainer />
     </>
   )
