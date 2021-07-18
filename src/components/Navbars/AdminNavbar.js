@@ -123,7 +123,10 @@ function AdminNavbar(props) {
                   <div className="photo">
                     <img
                       alt="..."
-                      src={require("assets/img/anime3.png").default}
+                      src={
+                        currentUser.photoURL ||
+                        require("assets/img/anime3.png").default
+                      }
                     />
                   </div>
                   <span className="ml-2">{currentUser.email}</span>

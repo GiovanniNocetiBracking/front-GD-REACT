@@ -11,7 +11,6 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState()
   const [loading, setLoading] = useState(true)
-  const [userInfo, setuserInfo] = useState({})
 
   async function register(email, password) {
     return await auth
@@ -26,50 +25,28 @@ export function AuthProvider({ children }) {
       })
   }
   function login(email, password) {
-    return auth
-      .signInWithEmailAndPassword(email, password)
-      .then((result) => {
-        console.log(result)
-      })
-      .catch((error) => {
-        console.log(error)
-        return error
-      })
+    return auth.signInWithEmailAndPassword(email, password).then(() => {
+      setLoading(false)
+    })
   }
   function logOut() {
-    return auth
-      .signOut()
-      .then((result) => {
-        console.log("console then logOut", result)
-      })
-      .catch((error) => {
-        console.log("console error logOut", error)
-      })
+    return auth.signOut()
   }
   function forgotPassword(email) {
-    return auth
-      .sendPasswordResetEmail(email)
-      .then((result) => {
-        console.log(result)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    return auth.sendPasswordResetEmail(email)
   }
   function signInWithGoogle(provider) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
-        firestore
-          .collection("userInfo")
-          .doc(result.user.uid)
-          .set({
-            userName: userInfo.userName || "",
-            lastName: userInfo.lastName || "",
-            firstName: userInfo.firstName || "",
-            about: userInfo.about || "",
-          })
+        firestore.collection("userInfo").doc(result.user.uid).set({
+          userName: "",
+          lastName: "",
+          firstName: "",
+          about: "",
+        })
         console.log(result)
+        setLoading(false)
       })
       .catch((error) => {
         console.log(error)
@@ -79,16 +56,14 @@ export function AuthProvider({ children }) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
-        firestore
-          .collection("userInfo")
-          .doc(result.user.uid)
-          .set({
-            userName: userInfo.userName || "",
-            lastName: userInfo.lastName || "",
-            firstName: userInfo.firstName || "",
-            about: userInfo.about || "",
-          })
+        firestore.collection("userInfo").doc(result.user.uid).set({
+          userName: "",
+          lastName: "",
+          firstName: "",
+          about: "",
+        })
         console.log(result)
+        setLoading(false)
       })
       .catch((error) => {
         console.log(error)
@@ -98,15 +73,14 @@ export function AuthProvider({ children }) {
     return auth
       .signInWithPopup(provider)
       .then((result) => {
-        firestore
-          .collection("userInfo")
-          .doc(result.user.uid)
-          .set({
-            userName: userInfo.userName || "",
-            lastName: userInfo.lastName || "",
-            firstName: userInfo.firstName || "",
-            about: userInfo.about || "",
-          })
+        firestore.collection("userInfo").doc(result.user.uid).set({
+          userName: "",
+          lastName: "",
+          firstName: "",
+          about: "",
+        })
+        setLoading(false)
+
         console.log(result)
       })
       .catch((error) => {
@@ -121,16 +95,6 @@ export function AuthProvider({ children }) {
     })
     return unsuscribe
   }, [])
-
-  useEffect(() => {
-    currentUser &&
-      firestore
-        .collection("userInfo")
-        .doc(currentUser.uid)
-        .onSnapshot((doc) => {
-          setuserInfo(doc.data())
-        })
-  }, [currentUser])
 
   const value = {
     currentUser,

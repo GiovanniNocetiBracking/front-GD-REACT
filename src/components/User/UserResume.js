@@ -32,17 +32,15 @@ export default function UserResume() {
         <CardBody>
           <CardText />
           <div className="author">
-            <a href="#pablo" onClick={(e) => e.preventDefault()}>
-              <img
-                alt="..."
-                className="avatar"
-                src={
-                  currentUser.photoURL ||
-                  require("assets/img/anime3.png").default
-                }
-              />
-              <h5 className="title">{userInfo.userName || ""}</h5>
-            </a>
+            <img
+              alt="..."
+              className="avatar"
+              src={
+                currentUser.photoURL || require("assets/img/anime3.png").default
+              }
+            />
+            <h5 className="title">{userInfo.userName || ""}</h5>
+
             <p>
               {userInfo.firstName || ""} {userInfo.lastName || ""}
             </p>

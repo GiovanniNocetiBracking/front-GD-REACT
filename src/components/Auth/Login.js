@@ -50,16 +50,19 @@ export default function Login() {
             onSubmit={async (values) => {
               setLoading(true)
               try {
-                await login(values.email, values.password)
+                await login(values.email, values.password).catch((error) => {
+                  setLoading(false)
+
+                  toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                    className: "foo-bar",
+                  })
+                })
                 setLoading(false)
                 history.push("/")
               } catch (error) {
                 setLoading(false)
                 console.log("catch login", error)
-                toast.error(error.message, {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                  className: "foo-bar",
-                })
               }
             }}
           >
