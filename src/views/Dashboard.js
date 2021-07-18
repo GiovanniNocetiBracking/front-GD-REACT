@@ -15,31 +15,30 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 // reactstrap components
-import { Card, CardHeader, CardTitle, Row, Col } from "reactstrap";
-import { database } from "components/Firebase/firebaseConfig";
-import { CardBody } from "reactstrap";
-import Gauge from "variables/gauge";
+import { Card, CardBody, CardHeader, CardTitle, Row, Col } from "reactstrap"
+import { database } from "components/Firebase/firebaseConfig"
+import Gauge from "variables/gauge"
 
 function Dashboard() {
-  const [glp, setGlp] = useState(null);
-  const [co, setCo] = useState(null);
-  const [smoke, setSmoke] = useState(null);
+  const [glp, setGlp] = useState(null)
+  const [co, setCo] = useState(null)
+  const [smoke, setSmoke] = useState(null)
   useEffect(() => {
-    const glpData = database.ref("Sensor1/lpg");
+    const glpData = database.ref("Sensor1/lpg")
     glpData.on("value", (snapshot) => {
-      setGlp(snapshot.val());
-    });
-    const coData = database.ref("Sensor1/co");
+      setGlp(snapshot.val())
+    })
+    const coData = database.ref("Sensor1/co")
     coData.on("value", (snapshot) => {
-      setCo(snapshot.val());
-    });
-    const smokeData = database.ref("Sensor1/smoke");
+      setCo(snapshot.val())
+    })
+    const smokeData = database.ref("Sensor1/smoke")
     smokeData.on("value", (snapshot) => {
-      setSmoke(snapshot.val());
-    });
-  }, []);
+      setSmoke(snapshot.val())
+    })
+  }, [])
   return (
     <>
       <div className="content">
@@ -53,7 +52,7 @@ function Dashboard() {
                   {glp}
                 </CardTitle>
               </CardHeader>
-              <CardBody className="px-4">
+              <CardBody className="">
                 <Gauge
                   label="GLP"
                   valor={glp}
@@ -75,7 +74,7 @@ function Dashboard() {
                 </CardTitle>
               </CardHeader>
 
-              <CardBody className="px-4">
+              <CardBody className="">
                 <Gauge
                   label="Humo"
                   valor={co}
@@ -97,7 +96,7 @@ function Dashboard() {
                 </CardTitle>
               </CardHeader>
 
-              <CardBody className="px-4">
+              <CardBody className="">
                 {" "}
                 <Gauge
                   label="Co"
@@ -114,7 +113,7 @@ function Dashboard() {
         <Row></Row>
       </div>
     </>
-  );
+  )
 }
 
-export default Dashboard;
+export default Dashboard
