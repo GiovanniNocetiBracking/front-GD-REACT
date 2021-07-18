@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { Card, CardTitle, Button, Container } from "reactstrap";
-import { useHistory, Link } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-import { Formik, Form as FormF } from "formik";
-import * as yup from "yup";
-import { TextField } from "../Forms/TextField";
-import { ToastContainer, toast } from "react-toastify";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
+import { Card, CardTitle, Button, Container } from "reactstrap"
+import { useHistory, Link } from "react-router-dom"
+import "react-toastify/dist/ReactToastify.css"
+import { Formik, Form as FormF } from "formik"
+import * as yup from "yup"
+import { TextField } from "../Forms/TextField"
+import { ToastContainer, toast } from "react-toastify"
+import Backdrop from "@material-ui/core/Backdrop"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
-}));
+}))
 export default function Register() {
-  const [loading, setLoading] = useState(false);
-  const classes = useStyles();
+  const [loading, setLoading] = useState(false)
+  const classes = useStyles()
   const validate = yup.object({
     email: yup
       .string()
@@ -29,9 +29,9 @@ export default function Register() {
     repeatPassword: yup
       .string()
       .oneOf([yup.ref("password"), null], "Las contraseñas deben coincidir"),
-  });
-  const { register } = useAuth();
-  const history = useHistory();
+  })
+  const { register } = useAuth()
+  const history = useHistory()
 
   return (
     <>
@@ -50,18 +50,33 @@ export default function Register() {
             }}
             validationSchema={validate}
             onSubmit={async (values, actions) => {
-              setLoading(true);
+              setLoading(true)
               try {
-                await register(values.email, values.password);
-                setLoading(false);
-                history.push("/");
+                await register(values.email, values.password)
+                  .then((res) => {
+                    setLoading(false)
+                    toast.success("Registro exitoso", {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                      className: "foo-bar",
+                    })
+
+                    setTimeout(() => history.push("/"), 3500)
+                  })
+                  .catch((error) => {
+                    setLoading(false)
+                    toast.error(error.message, {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                      className: "foo-bar",
+                    })
+                    actions.resetForm()
+                  })
               } catch (error) {
-                setLoading(false);
+                setLoading(false)
 
                 toast.error(error.message, {
                   position: toast.POSITION.BOTTOM_RIGHT,
                   className: "foo-bar",
-                });
+                })
               }
             }}
           >
@@ -114,5 +129,5 @@ export default function Register() {
         </div>
       </Container>
     </>
-  );
+  )
 }

@@ -47,19 +47,27 @@ export default function Login() {
               password: "",
             }}
             validationSchema={validate}
-            onSubmit={async (values) => {
+            onSubmit={async (values, actions) => {
               setLoading(true)
               try {
-                await login(values.email, values.password).catch((error) => {
-                  setLoading(false)
+                await login(values.email, values.password)
+                  .then((res) => {
+                    setLoading(false)
+                    toast.success("Ingreso exitoso", {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                      className: "foo-bar",
+                    })
 
-                  toast.error(error.message, {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    className: "foo-bar",
+                    setTimeout(() => history.push("/"), 3500)
                   })
-                })
-                setLoading(false)
-                history.push("/")
+                  .catch((error) => {
+                    setLoading(false)
+                    toast.error(error.message, {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                      className: "foo-bar",
+                    })
+                    actions.resetForm()
+                  })
               } catch (error) {
                 setLoading(false)
                 console.log("catch login", error)

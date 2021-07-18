@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { Card, Button, CardBody, Row, Col } from "reactstrap"
-
+import { toast } from "react-toastify"
 import { useAuth } from "../../contexts/AuthContext"
 import {
   googleProvider,
@@ -38,8 +38,22 @@ export default function ButtonSocialMedia() {
     setLoading(true)
     try {
       await signInWithFacebook(facebookProvider)
-      setLoading(false)
-      history.push("/")
+        .then((res) => {
+          setLoading(false)
+          toast.success("Ingreso exitoso", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+
+          setTimeout(() => history.push("/"), 3500)
+        })
+        .catch((error) => {
+          setLoading(false)
+          toast.error(error.message, {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "foo-bar",
+          })
+        })
     } catch (error) {
       console.log(error)
     }
