@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { Card, CardText, CardTitle, Button, FormGroup } from "reactstrap";
-import { Formik, Form as FormF } from "formik";
-import * as yup from "yup";
-import { TextField } from "./TextField";
-import { ToastContainer, toast } from "react-toastify";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
-import axios from "axios";
+import React, { useState } from "react"
+import { Card, CardText, CardTitle, Button, FormGroup } from "reactstrap"
+import { Formik, Form as FormF } from "formik"
+import * as yup from "yup"
+import { TextField } from "./TextField"
+import { ToastContainer, toast } from "react-toastify"
+import Backdrop from "@material-ui/core/Backdrop"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
+import axios from "axios"
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
-}));
+}))
 export default function Subscribe() {
-  const [loading, setLoading] = useState(false);
-  const classes = useStyles();
+  const [loading, setLoading] = useState(false)
+  const classes = useStyles()
   const validate = yup.object({
     email: yup
       .string()
       .email("Pruebe con un correo valido")
       .required("El campo email es requerido"),
-  });
+  })
   return (
     <>
       <Formik
@@ -32,27 +32,30 @@ export default function Subscribe() {
         }}
         validationSchema={validate}
         onSubmit={async (values, actions) => {
-          setLoading(true);
-          const apiUrl = process.env.REACT_APP_URL_API;
+          setLoading(true)
+          const apiUrl = process.env.REACT_APP_URL_API
           try {
             await axios
               .post(apiUrl + "/landing/suscribe", values)
               .then(({ data }) => {
-                actions.resetForm();
+                actions.resetForm()
                 if (data._errorMessages) {
                   toast.error(data._errorMessages[0].message, {
                     position: toast.POSITION.BOTTOM_RIGHT,
-                  });
+                  })
                 } else {
                   toast.success("Muchas gracias por suscribirte!", {
                     position: toast.POSITION.BOTTOM_RIGHT,
-                  });
+                  })
                 }
-              });
-            setLoading(false);
+              })
+            setLoading(false)
           } catch (error) {
-            console.log(error);
-            setLoading(false);
+            toast.error("Envio fallido", {
+              position: toast.POSITION.BOTTOM_RIGHT,
+              className: "foo-bar",
+            })
+            setLoading(false)
           }
         }}
       >
@@ -92,5 +95,5 @@ export default function Subscribe() {
         )}
       </Formik>
     </>
-  );
+  )
 }
