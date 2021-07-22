@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Card, Button } from "reactstrap";
-import { firestore } from "../Firebase/firebaseConfig";
-import { useAuth } from "../../contexts/AuthContext";
-import { Formik, Form as FormF } from "formik";
-import * as yup from "yup";
-import { TextField } from "./TextField";
-import { TextArea } from "./TextArea";
-import { toast } from "react-toastify";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react"
+import { Card, Button } from "reactstrap"
+import { firestore } from "../Firebase/firebaseConfig"
+import { useAuth } from "../../contexts/AuthContext"
+import { Formik, Form as FormF } from "formik"
+import * as yup from "yup"
+import { TextField } from "./TextField"
+import { TextArea } from "./TextArea"
+import { toast } from "react-toastify"
+import Backdrop from "@material-ui/core/Backdrop"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
-}));
+}))
 export default function UserProfile({ onHide, Alerta }) {
-  const { currentUser } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [userInfo, setuserInfo] = useState({});
-  const classes = useStyles();
+  const { currentUser } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [userInfo, setuserInfo] = useState({})
+  const classes = useStyles()
   const validate = yup.object({
     userName: yup
       .string()
@@ -40,17 +40,17 @@ export default function UserProfile({ onHide, Alerta }) {
       .string()
       .min(10, "El mensaje debe contener almenos 10 caracteres")
       .max(700, "El mensaje debe contener como maximo 500 caracteres"),
-  });
+  })
   useEffect(() => {
-    setLoading(true);
+    setLoading(true)
     firestore
       .collection("userInfo")
       .doc(currentUser.uid)
       .onSnapshot((doc) => {
-        setuserInfo(doc.data());
-        setLoading(false);
-      });
-  }, [currentUser]);
+        setuserInfo(doc.data())
+        setLoading(false)
+      })
+  }, [currentUser])
 
   return (
     <>
@@ -65,7 +65,7 @@ export default function UserProfile({ onHide, Alerta }) {
         }}
         validationSchema={validate}
         onSubmit={(values, actions) => {
-          setLoading(true);
+          setLoading(true)
           try {
             firestore
               .collection("userInfo")
@@ -77,17 +77,17 @@ export default function UserProfile({ onHide, Alerta }) {
                 about: values.about,
               })
               .then(() => {
-                onHide();
-                Alerta();
-                actions.resetForm();
-                setLoading(false);
-              });
+                onHide()
+                Alerta()
+                actions.resetForm()
+                setLoading(false)
+              })
           } catch (error) {
             toast.error(error.message, {
               position: toast.POSITION.BOTTOM_RIGHT,
               className: "foo-bar",
-            });
-            setLoading(false);
+            })
+            setLoading(false)
           }
         }}
       >
@@ -152,5 +152,5 @@ export default function UserProfile({ onHide, Alerta }) {
         )}
       </Formik>
     </>
-  );
+  )
 }

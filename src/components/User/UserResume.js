@@ -46,99 +46,120 @@ export default function UserResume() {
   }, [currentUser])
   return (
     <>
-      <Card className="card-user">
-        <CardBody>
-          <div className="author">
-            <img
-              alt="..."
-              className="avatar"
-              src={
-                currentUser.photoURL || require("assets/img/anime3.png").default
-              }
-            />
-
-            <div>
-              <Row>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-end"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>
-                    <b>Nombre de usuario:</b>
-                  </h4>
-                </Col>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-start"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>{userInfo.userName || ""}</h4>
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-end"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>
-                    <b>Nombre completo:</b>
-                  </h4>
-                </Col>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-start"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>
-                    {userInfo.firstName || ""} {userInfo.lastName || ""}
-                  </h4>
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-end"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>
-                    <b>Informacion del usuario:</b>
-                  </h4>
-                </Col>
-                <Col
-                  lg={6}
-                  className={`${
-                    size.width >= 992
-                      ? "d-flex justify-content-start"
-                      : "d-flex justify-content-center"
-                  }`}
-                >
-                  <h4>{userInfo.about || ""}</h4>
-                </Col>
-              </Row>
+      {!userInfo ? (
+        <Card className="card-user">
+          <CardBody>
+            <div className="author">
+              <img
+                alt="..."
+                className="avatar"
+                src={
+                  currentUser.photoURL ||
+                  require("assets/img/anime3.png").default
+                }
+              />
             </div>
-          </div>
-        </CardBody>
-        <CardFooter>
-          <Button onClick={handleShow}>Editar informacion de usuario</Button>
-        </CardFooter>
-      </Card>
+          </CardBody>
+          <CardFooter>
+            <Button onClick={handleShow}>Editar informacion de usuario</Button>
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card className="card-user">
+          <CardBody>
+            <div className="author">
+              <img
+                alt="..."
+                className="avatar"
+                src={
+                  currentUser.photoURL ||
+                  require("assets/img/anime3.png").default
+                }
+              />
+              ;
+              <div>
+                <Row>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-end"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>
+                      <b>Nombre de usuario:</b>
+                    </h4>
+                  </Col>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-start"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>{userInfo.userName || ""}</h4>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-end"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>
+                      <b>Nombre completo:</b>
+                    </h4>
+                  </Col>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-start"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>
+                      {userInfo.firstName || ""} {userInfo.lastName || ""}
+                    </h4>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-end"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>
+                      <b>Informacion del usuario:</b>
+                    </h4>
+                  </Col>
+                  <Col
+                    lg={6}
+                    className={`${
+                      size.width >= 992
+                        ? "d-flex justify-content-start"
+                        : "d-flex justify-content-center"
+                    }`}
+                  >
+                    <h4>{userInfo.about || ""}</h4>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </CardBody>
+          <CardFooter>
+            <Button onClick={handleShow}>Editar informacion de usuario</Button>
+          </CardFooter>
+        </Card>
+      )}
       <Modal
         show={openModal}
         onHide={handleClose}
