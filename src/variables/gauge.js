@@ -1,5 +1,5 @@
-import React from "react";
-import { Chart } from "react-google-charts";
+import React from "react"
+import { Chart } from "react-google-charts"
 
 export default function gauge({
   label,
@@ -29,5 +29,5 @@ export default function gauge({
         }}
       />
     </>
-  );
+  )
 }

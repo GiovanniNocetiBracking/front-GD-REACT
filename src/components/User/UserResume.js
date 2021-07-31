@@ -61,7 +61,11 @@ export default function UserResume() {
             </div>
           </CardBody>
           <CardFooter>
-            <Button onClick={handleShow}>Editar informacion de usuario</Button>
+            <div className="d-flex justify-content-center">
+              <Button onClick={handleShow}>
+                Editar informacion de usuario
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       ) : (

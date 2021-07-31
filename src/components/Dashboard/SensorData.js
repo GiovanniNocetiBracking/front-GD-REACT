@@ -8,13 +8,14 @@ import {
   Col,
   Button,
 } from "reactstrap"
-import { database } from "components/Firebase/firebaseConfig"
+import { database, messaging } from "components/Firebase/firebaseConfig"
 import Gauge from "variables/gauge"
 
-export default function SensorData({ Btn }) {
-  const [glp, setGlp] = useState(null)
-  const [co, setCo] = useState(null)
-  const [smoke, setSmoke] = useState(null)
+export default function SensorData() {
+  const [glp, setGlp] = useState()
+  const [co, setCo] = useState()
+  const [smoke, setSmoke] = useState()
+  const [notificationToken, setNotificationToken] = useState("")
 
   useEffect(() => {
     const glpData = database.ref("Sensor1/lpg")
@@ -30,6 +31,46 @@ export default function SensorData({ Btn }) {
       setSmoke(snapshot.val())
     })
   }, [])
+  useEffect(() => {
+    messaging
+      .requestPermission()
+      .then(() => {
+        return messaging.getToken()
+      })
+      .then((data) => {
+        setNotificationToken(data)
+      })
+  }, [])
+  const handleNotifications = async () => {
+    if (glp >= 200) {
+      await fetch("https://fcm.googleapis.com/fcm/send", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "key=AAAA00Vyvgw:APA91bEIKqjQlozcSJ8gV9e-xLWu0yqcse-e4tuwNhOngFXiyScu0jgAfSy0LAJrTI6b0TKP2qIQkrGEpnuRhln5bSa4iyneouf0lvhClKypDn7SYEi74m06zQjpySexTcte6FZES3J_",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          notification: {
+            title: "Gas Detect",
+            body: "Riesgo de contaminacion en el ambiente",
+            click_action: "http://localhost:3000/",
+            icon: "http://url-to-an-icon/icon.png",
+          },
+          to: notificationToken,
+        }),
+      })
+        .then(function (res) {
+          console.log(res)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    }
+  }
+  useEffect(() => {
+    handleNotifications()
+  })
   return (
     <>
       <div className="content">
@@ -62,14 +103,14 @@ export default function SensorData({ Btn }) {
                   <h5 className="card-category">Humo</h5>
                   <CardTitle tag="h3">
                     <i className="tim-icons icon-alert-circle-exc text-warning" />{" "}
-                    {co}
+                    {smoke}
                   </CardTitle>
                 </CardHeader>
 
                 <CardBody className="">
                   <Gauge
                     label="Humo"
-                    valor={co}
+                    valor={smoke}
                     yellowFrom={50}
                     yellowTo={75}
                     redFrom={75}
@@ -84,7 +125,7 @@ export default function SensorData({ Btn }) {
                   <h5 className="card-category">Monoxido de carbono</h5>
                   <CardTitle tag="h3">
                     <i className="tim-icons icon-alert-circle-exc text-warning" />{" "}
-                    {smoke}
+                    {co}
                   </CardTitle>
                 </CardHeader>
 
@@ -92,7 +133,7 @@ export default function SensorData({ Btn }) {
                   {" "}
                   <Gauge
                     label="Co"
-                    valor={smoke}
+                    valor={co}
                     yellowFrom={50}
                     yellowTo={75}
                     redFrom={75}
@@ -100,11 +141,6 @@ export default function SensorData({ Btn }) {
                   />
                 </CardBody>
               </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="d-flex justify-content-end">
-              <Button onClick={Btn}>Eliminar dispositivo</Button>
             </Col>
           </Row>
         </Card>
