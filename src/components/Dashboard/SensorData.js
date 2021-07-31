@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Row,
-  Col,
-  Button,
-} from "reactstrap"
+import { Card, CardBody, CardHeader, CardTitle, Row, Col } from "reactstrap"
 import { database, messaging } from "components/Firebase/firebaseConfig"
 import Gauge from "variables/gauge"
 
