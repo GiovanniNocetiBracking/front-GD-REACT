@@ -21,10 +21,8 @@ export default function UserResume() {
 	const size = useWindowSize();
 	const { currentUser } = useAuth();
 	const classes = useStyles();
-
 	const [openModal, setOpenModal] = useState(false);
 	const [userInfo, setuserInfo] = useState({});
-	const [notificatedUsers, setnotificatedUsers] = useState([]);
 	const [loading, setLoading] = useState(false);
 
 	const handleClose = () => setOpenModal(false);
@@ -42,7 +40,6 @@ export default function UserResume() {
 			.doc(currentUser.uid)
 			.onSnapshot((doc) => {
 				setuserInfo(doc.data());
-				setnotificatedUsers(doc.data().notificatedUsers);
 				setLoading(false);
 			});
 	}, [currentUser]);
@@ -156,34 +153,6 @@ export default function UserResume() {
 										}`}
 									>
 										<h4>{userInfo.about || ""}</h4>
-									</Col>
-								</Row>
-								<Row>
-									<Col
-										lg={6}
-										className={`${
-											size.width >= 992
-												? "d-flex justify-content-end"
-												: "d-flex justify-content-center"
-										}`}
-									>
-										<h4>
-											<b>Correos a notificar:</b>
-										</h4>
-									</Col>
-									<Col
-										lg={6}
-										className={`${
-											size.width >= 992
-												? "d-flex justify-content-start"
-												: "d-flex justify-content-center"
-										}`}
-									>
-										<div>
-											{notificatedUsers.map((user, index) => (
-												<h4 key={index}>{user}</h4>
-											))}
-										</div>
 									</Col>
 								</Row>
 							</div>

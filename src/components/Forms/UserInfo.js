@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Label } from "reactstrap";
+import { Card, Button } from "reactstrap";
 import { firestore } from "../Firebase/firebaseConfig";
 import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form as FormF } from "formik";
@@ -21,7 +21,6 @@ export default function UserProfile({ onHide, Alerta }) {
 	const { currentUser } = useAuth();
 	const [loading, setLoading] = useState(false);
 	const [userInfo, setuserInfo] = useState({});
-	const [notificatedUsers, setnotificatedUsers] = useState([]);
 	const classes = useStyles();
 	const validate = yup.object({
 		userName: yup
@@ -41,7 +40,6 @@ export default function UserProfile({ onHide, Alerta }) {
 			.string()
 			.min(10, "El mensaje debe contener almenos 10 caracteres")
 			.max(700, "El mensaje debe contener como maximo 500 caracteres"),
-		notificatedUsers: yup.string().email("Pruebe con un correo valido"),
 	});
 	useEffect(() => {
 		setLoading(true);
@@ -50,7 +48,6 @@ export default function UserProfile({ onHide, Alerta }) {
 			.doc(currentUser.uid)
 			.onSnapshot((doc) => {
 				setuserInfo(doc.data());
-				setnotificatedUsers(doc.data().notificatedUsers);
 				setLoading(false);
 			});
 	}, [currentUser]);
@@ -65,7 +62,6 @@ export default function UserProfile({ onHide, Alerta }) {
 					firstName: userInfo.firstName || "",
 					about: userInfo.about || "",
 					email: currentUser.email,
-					notificatedUsers: "",
 				}}
 				validationSchema={validate}
 				onSubmit={(values, actions) => {
@@ -79,7 +75,6 @@ export default function UserProfile({ onHide, Alerta }) {
 								lastName: values.lastName,
 								firstName: values.firstName,
 								about: values.about,
-								notificatedUsers: notificatedUsers,
 							})
 							.then(() => {
 								onHide();
@@ -110,7 +105,7 @@ export default function UserProfile({ onHide, Alerta }) {
 								</div>
 								<div className="col-sm-12 col-md-6">
 									<TextField
-										label="Correo"
+										mlabel="Correo"
 										name="email"
 										type="text"
 										placeholder="Correo"
@@ -142,56 +137,6 @@ export default function UserProfile({ onHide, Alerta }) {
 								name="about"
 								placeholder={`Escribe una breve descripcion de tu empresa o de tu hogar, la informacion que nos brinde sera de utilidad para llevar de mejor manera la gestion de un posible incidente.`}
 							/>
-							<div className="row">
-								<div className="col-sm-12 col-md-6">
-									<TextField
-										id="notificatedUsersinput"
-										label="Correos a notificar"
-										name="notificatedUsers"
-										type="text"
-										placeholder="Correos a notificar"
-									></TextField>
-
-									<Button
-										className="btn btn-success mt-2 ml-3"
-										type="button"
-										onClick={() => {
-											setnotificatedUsers((arr) => [
-												...arr,
-												`${"Elcorreodeejemplomaslargo2@largo.com"}`,
-											]);
-										}}
-									>
-										Agregar correo
-									</Button>
-								</div>
-								<div className="col-sm-12 col-md-6">
-									<Label className="mt-2">Correos</Label>
-									<ul>
-										{notificatedUsers.map((user) => (
-											<div className="row">
-												<li key={user}>{user}</li>
-												<Button
-													className="btn btn-danger mt-2 ml-3"
-													type="button"
-													onClick={() => {
-														setnotificatedUsers(notificatedUsers.slice(user));
-													}}
-												>
-													Eliminar
-												</Button>
-												<Button
-													className="btn btn-warning mt-2 ml-3"
-													type="button"
-													onClick={() => {}}
-												>
-													Editar
-												</Button>
-											</div>
-										))}
-									</ul>
-								</div>
-							</div>
 
 							<Button disabled={loading} type="submit" className="mt-4">
 								Guardar informacion
