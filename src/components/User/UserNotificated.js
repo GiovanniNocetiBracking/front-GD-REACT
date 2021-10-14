@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Button, Row, Col } from "reactstrap";
+import firebase from "firebase/app";
 import { firestore } from "../Firebase/firebaseConfig";
 import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form as FormF } from "formik";
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UserNotificated() {
 	const { currentUser } = useAuth();
-	const [notificatedUsersByMail, setNotificatedUsersByMail] = useState([]);
+	const [notificatedUsersByEmail, setNotificatedUsersByMail] = useState([]);
 	const [notificatedUsersByCellPhone, setNotificatedUsersByCellPhone] =
 		useState([]);
 	const [loading, setLoading] = useState(false);
@@ -38,22 +39,27 @@ export default function UserNotificated() {
 			.nullable(),
 	});
 
+	const handleDelete = (key) => {
+		firestore
+			.collection("userNotificationInfo")
+			.doc(currentUser.uid)
+			.update({
+				notificatedUsersByMail: firebase.firestore.FieldValue.arrayRemove(key),
+			});
+	};
+
 	useEffect(() => {
 		setLoading(true);
-
 		firestore
 			.collection("userNotificationInfo")
 			.doc(currentUser.uid)
 			.onSnapshot((doc) => {
-				if (doc.length > 0) {
-					setNotificatedUsersByMail(doc.data().notificatedUsersByMail);
-					setNotificatedUsersByCellPhone(
-						doc.data().notificatedUsersByCellPhone
-					);
-				}
+				setNotificatedUsersByMail(doc.data().notificatedUsersByMail);
+				setNotificatedUsersByCellPhone(doc.data().notificatedUsersByCellPhone);
+
 				setLoading(false);
 			});
-	}, [currentUser]);
+	}, []);
 
 	return (
 		<>
@@ -75,14 +81,17 @@ export default function UserNotificated() {
 								onSubmit={(values, actions) => {
 									setLoading(true);
 									try {
-										setNotificatedUsersByMail([
-											...notificatedUsersByMail,
-											values.email,
-										]);
-
+										firestore
+											.collection("userNotificationInfo")
+											.doc(currentUser.uid)
+											.update({
+												notificatedUsersByMail:
+													firebase.firestore.FieldValue.arrayUnion(
+														values.email
+													),
+											});
 										actions.resetForm();
 										setLoading(false);
-										console.log(notificatedUsersByMail);
 									} catch (error) {
 										toast.error(error.message, {
 											position: toast.POSITION.BOTTOM_RIGHT,
@@ -111,7 +120,42 @@ export default function UserNotificated() {
 						</Col>
 						<Col>
 							<h4 className="mt-2 d-flex justify-content-center">Correos</h4>
-							<ul></ul>
+
+							{notificatedUsersByEmail && notificatedUsersByEmail.length > 0 ? (
+								notificatedUsersByEmail.map((user, key) => {
+									return (
+										<div className="" key={key}>
+											<Row className="d-flex align-items-center">
+												<Col className="d-flex justify-content-end">
+													<ul>
+														<li className="mt-2">{user}</li>
+													</ul>
+												</Col>
+												<Col>
+													<Button
+														type="button"
+														className=""
+														onClick={handleDelete(key)}
+													>
+														<i
+															className="tim-icons icon-trash-simple
+
+"
+														></i>
+													</Button>
+													<Button type="button" className="">
+														<i className="tim-icons icon-pencil"></i>
+													</Button>
+												</Col>
+											</Row>
+										</div>
+									);
+								})
+							) : (
+								<h3 className="d-flex justify-content-center">
+									no hay ningun elemento
+								</h3>
+							)}
 						</Col>
 					</Row>
 					<Row className="mt-5">
@@ -120,13 +164,21 @@ export default function UserNotificated() {
 							<Formik
 								enableReinitialize={true}
 								initialValues={{
-									email: "",
+									cellPhone: "",
 								}}
 								validationSchema={validateForm2}
 								onSubmit={(values, actions) => {
 									setLoading(true);
 									try {
-										setNotificatedUsersByCellPhone(values.cellPhone);
+										firestore
+											.collection("userNotificationInfo")
+											.doc(currentUser.uid)
+											.update({
+												notificatedUsersByCellPhone:
+													firebase.firestore.FieldValue.arrayUnion(
+														values.cellPhone
+													),
+											});
 										actions.resetForm();
 										setLoading(false);
 										console.log(notificatedUsersByCellPhone);
@@ -158,6 +210,31 @@ export default function UserNotificated() {
 						</Col>
 						<Col>
 							<h4 className="mt-2 d-flex justify-content-center">Numeros</h4>
+							{notificatedUsersByCellPhone.map((user, key) => {
+								return (
+									<div className="" key={key}>
+										<Row>
+											<Col className="d-flex justify-content-end">
+												<ul>
+													<li>{user}</li>
+												</ul>
+											</Col>
+											<Col>
+												<Button type="button" className="danger">
+													<i
+														className="tim-icons icon-trash-simple
+
+"
+													></i>
+												</Button>
+												<Button type="button" className="danger">
+													<i className="tim-icons icon-pencil"></i>
+												</Button>
+											</Col>
+										</Row>
+									</div>
+								);
+							})}
 						</Col>
 					</Row>
 					{loading && (
