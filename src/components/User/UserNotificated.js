@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UserNotificated() {
 	const { currentUser } = useAuth();
-	const [notificatedUsersByEmail, setNotificatedUsersByMail] = useState([]);
+	const [notificatedUsersByEmail, setNotificatedUsersByEmail] = useState([]);
 	const [notificatedUsersByCellPhone, setNotificatedUsersByCellPhone] =
 		useState([]);
 	const [loading, setLoading] = useState(false);
@@ -39,22 +39,13 @@ export default function UserNotificated() {
 			.nullable(),
 	});
 
-	const handleDelete = () => {
-		firestore.collection("userNotificationInfo").doc(currentUser.uid).update({
-			notificatedUsersByMail: firebase.firestore.FieldValue.delete(),
-		});
-	};
-
 	useEffect(() => {
-		setLoading(true);
 		firestore
 			.collection("userNotificationInfo")
 			.doc(currentUser.uid)
 			.onSnapshot((doc) => {
-				setNotificatedUsersByMail(doc.data().notificatedUsersByMail);
+				setNotificatedUsersByEmail(doc.data().notificatedUsersByMail);
 				setNotificatedUsersByCellPhone(doc.data().notificatedUsersByCellPhone);
-
-				setLoading(false);
 			});
 	}, [currentUser.uid]);
 
@@ -132,7 +123,18 @@ export default function UserNotificated() {
 													<Button
 														type="button"
 														className=""
-														onClick={handleDelete}
+														onClick={() => {
+															const filteredUserMail =
+																notificatedUsersByEmail.filter(
+																	(userEmail) => userEmail !== user
+																);
+															firestore
+																.collection("userNotificationInfo")
+																.doc(currentUser.uid)
+																.update({
+																	notificatedUsersByMail: filteredUserMail,
+																});
+														}}
 													>
 														<i
 															className="tim-icons icon-trash-simple
@@ -178,7 +180,6 @@ export default function UserNotificated() {
 											});
 										actions.resetForm();
 										setLoading(false);
-										console.log(notificatedUsersByCellPhone);
 									} catch (error) {
 										toast.error(error.message, {
 											position: toast.POSITION.BOTTOM_RIGHT,
@@ -207,31 +208,55 @@ export default function UserNotificated() {
 						</Col>
 						<Col>
 							<h4 className="mt-2 d-flex justify-content-center">Numeros</h4>
-							{notificatedUsersByCellPhone.map((user, key) => {
-								return (
-									<div className="" key={key}>
-										<Row>
-											<Col className="d-flex justify-content-end">
-												<ul>
-													<li>{user}</li>
-												</ul>
-											</Col>
-											<Col>
-												<Button type="button" className="danger">
-													<i
-														className="tim-icons icon-trash-simple
+
+							{notificatedUsersByCellPhone &&
+							notificatedUsersByCellPhone.length > 0 ? (
+								notificatedUsersByCellPhone.map((user, key) => {
+									return (
+										<div className="" key={key}>
+											<Row>
+												<Col className="d-flex justify-content-end">
+													<ul>
+														<li>{user}</li>
+													</ul>
+												</Col>
+												<Col>
+													<Button
+														type="button"
+														className="danger"
+														onClick={() => {
+															const filteredUserPhone =
+																notificatedUsersByCellPhone.filter(
+																	(userCell) => userCell !== user
+																);
+															firestore
+																.collection("userNotificationInfo")
+																.doc(currentUser.uid)
+																.update({
+																	notificatedUsersByCellPhone:
+																		filteredUserPhone,
+																});
+														}}
+													>
+														<i
+															className="tim-icons icon-trash-simple
 
 "
-													></i>
-												</Button>
-												<Button type="button" className="danger">
-													<i className="tim-icons icon-pencil"></i>
-												</Button>
-											</Col>
-										</Row>
-									</div>
-								);
-							})}
+														></i>
+													</Button>
+													<Button type="button" className="danger">
+														<i className="tim-icons icon-pencil"></i>
+													</Button>
+												</Col>
+											</Row>
+										</div>
+									);
+								})
+							) : (
+								<h3 className="d-flex justify-content-center">
+									no hay ningun elemento
+								</h3>
+							)}
 						</Col>
 					</Row>
 					{loading && (
