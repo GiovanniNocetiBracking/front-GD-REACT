@@ -39,13 +39,10 @@ export default function UserNotificated() {
 			.nullable(),
 	});
 
-	const handleDelete = (key) => {
-		firestore
-			.collection("userNotificationInfo")
-			.doc(currentUser.uid)
-			.update({
-				notificatedUsersByMail: firebase.firestore.FieldValue.arrayRemove(key),
-			});
+	const handleDelete = () => {
+		firestore.collection("userNotificationInfo").doc(currentUser.uid).update({
+			notificatedUsersByMail: firebase.firestore.FieldValue.delete(),
+		});
 	};
 
 	useEffect(() => {
@@ -59,7 +56,7 @@ export default function UserNotificated() {
 
 				setLoading(false);
 			});
-	}, []);
+	}, [currentUser.uid]);
 
 	return (
 		<>
@@ -135,7 +132,7 @@ export default function UserNotificated() {
 													<Button
 														type="button"
 														className=""
-														onClick={handleDelete(key)}
+														onClick={handleDelete}
 													>
 														<i
 															className="tim-icons icon-trash-simple
