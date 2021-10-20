@@ -50,6 +50,7 @@ export default function SensorData() {
 				setNotificatedUsersByCellPhone(doc.data().notificatedUsersByCellPhone);
 			});
 	}, [currentUser]);
+
 	const handleNotifications = () => {
 		const message = "Se ha detectado la presencia de gas en niveles peligrosos";
 		const text = "Se ha detectado la presencia de gas en niveles peligrosos";
@@ -110,9 +111,10 @@ export default function SensorData() {
         }) */
 		}
 	};
+
 	useEffect(() => {
 		handleNotifications();
-	}, [glp, co, smoke]);
+	});
 	return (
 		<>
 			<div className="content">
