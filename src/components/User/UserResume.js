@@ -159,7 +159,9 @@ export default function UserResume() {
 						</div>
 					</CardBody>
 					<CardFooter>
-						<Button onClick={handleShow}>Editar informacion de usuario</Button>
+						<Button className="ml-5" onClick={handleShow}>
+							Editar informacion de usuario
+						</Button>
 					</CardFooter>
 				</Card>
 			)}

@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form as FormF } from "formik";
 import * as yup from "yup";
 import { TextField } from "../Forms/TextField";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
@@ -78,6 +78,10 @@ export default function UserNotificated() {
 														values.email
 													),
 											});
+										toast.success("Correo agregado", {
+											position: toast.POSITION.BOTTOM_RIGHT,
+											className: "foo-bar",
+										});
 										actions.resetForm();
 										setLoading(false);
 									} catch (error) {
@@ -142,9 +146,6 @@ export default function UserNotificated() {
 "
 														></i>
 													</Button>
-													<Button type="button" className="">
-														<i className="tim-icons icon-pencil"></i>
-													</Button>
 												</Col>
 											</Row>
 										</div>
@@ -178,6 +179,10 @@ export default function UserNotificated() {
 														values.cellPhone
 													),
 											});
+										toast.success("Nuevo numero agregado", {
+											position: toast.POSITION.BOTTOM_RIGHT,
+											className: "foo-bar",
+										});
 										actions.resetForm();
 										setLoading(false);
 									} catch (error) {
@@ -214,10 +219,10 @@ export default function UserNotificated() {
 								notificatedUsersByCellPhone.map((user, key) => {
 									return (
 										<div className="" key={key}>
-											<Row>
+											<Row className="d-flex align-items-center">
 												<Col className="d-flex justify-content-end">
 													<ul>
-														<li>{user}</li>
+														<li className="mt-2">{user}</li>
 													</ul>
 												</Col>
 												<Col>
@@ -244,9 +249,6 @@ export default function UserNotificated() {
 "
 														></i>
 													</Button>
-													<Button type="button" className="danger">
-														<i className="tim-icons icon-pencil"></i>
-													</Button>
 												</Col>
 											</Row>
 										</div>
@@ -266,6 +268,7 @@ export default function UserNotificated() {
 					)}
 				</CardBody>
 			</Card>
+			<ToastContainer />
 		</>
 	);
 }
