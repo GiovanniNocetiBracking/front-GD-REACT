@@ -47,7 +47,7 @@ export default function UserResume() {
 		<>
 			{!userInfo ? (
 				<Card className="card-user">
-					<CardBody>
+					<CardBody className=" mh-100" style={{ height: "600px" }}>
 						<div className="author">
 							<img
 								alt="..."
@@ -69,7 +69,7 @@ export default function UserResume() {
 				</Card>
 			) : (
 				<Card className="card-user">
-					<CardBody>
+					<CardBody className=" mh-100" style={{ height: "600px" }}>
 						<div className="author">
 							<img
 								alt="..."
@@ -98,7 +98,7 @@ export default function UserResume() {
 										lg={6}
 										className={`${
 											size.width >= 992
-												? "d-flex justify-content-start"
+												? "d-flex justify-content-center"
 												: "d-flex justify-content-center"
 										}`}
 									>
@@ -122,7 +122,7 @@ export default function UserResume() {
 										lg={6}
 										className={`${
 											size.width >= 992
-												? "d-flex justify-content-start"
+												? "d-flex justify-content-center"
 												: "d-flex justify-content-center"
 										}`}
 									>
@@ -148,7 +148,7 @@ export default function UserResume() {
 										lg={6}
 										className={`${
 											size.width >= 992
-												? "d-flex justify-content-start"
+												? "d-flex justify-content-center"
 												: "d-flex justify-content-center"
 										}`}
 									>

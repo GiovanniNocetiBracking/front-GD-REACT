@@ -55,7 +55,7 @@ export default function UserNotificated() {
 				<CardHeader>
 					<h1>Metodos de notificacion</h1>
 				</CardHeader>
-				<CardBody>
+				<CardBody className=" mh-100" style={{ height: "600px" }}>
 					<Row>
 						<Col>
 							<h2>Notificacion por correo</h2>

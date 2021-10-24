@@ -9,12 +9,10 @@ function UserProfile() {
 		<>
 			<div className="content">
 				<Row>
-					<Col sm="12">
+					<Col sm="12" lg="4">
 						<UserResume />
 					</Col>
-				</Row>
-				<Row>
-					<Col sm="12">
+					<Col sm="12" lg="8">
 						<UserNotificated />
 					</Col>
 				</Row>
