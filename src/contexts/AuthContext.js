@@ -28,6 +28,12 @@ export function AuthProvider({ children }) {
 					notificatedUsersByMail: "",
 					notificatedUsersByCellPhone: "",
 				});
+			})
+			.then((cred) => {
+				firestore.collection("reports").doc(cred.user.uid).set({
+					alertSMS: [],
+					alertMail: [],
+				});
 			});
 	}
 	function login(email, password) {
@@ -58,6 +64,10 @@ export function AuthProvider({ children }) {
 						notificatedUsersByMail: "",
 						notificatedUsersByCellPhone: "",
 					});
+					firestore.collection("reports").doc(cred.user.uid).set({
+						alertSMS: [],
+						alertMail: [],
+					});
 					setLoading(false);
 				}
 			});
@@ -80,6 +90,10 @@ export function AuthProvider({ children }) {
 						notificatedUsersByMail: "",
 						notificatedUsersByCellPhone: "",
 					});
+					firestore.collection("reports").doc(cred.user.uid).set({
+						alertSMS: [],
+						alertMail: [],
+					});
 					setLoading(false);
 				}
 			});
@@ -101,6 +115,10 @@ export function AuthProvider({ children }) {
 					firestore.collection("userNotificationInfo").doc(cred.user.uid).set({
 						notificatedUsersByMail: "",
 						notificatedUsersByCellPhone: "",
+					});
+					firestore.collection("reports").doc(cred.user.uid).set({
+						alertSMS: [],
+						alertMail: [],
 					});
 					setLoading(false);
 				}

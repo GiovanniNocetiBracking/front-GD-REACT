@@ -34,6 +34,40 @@ export default function SensorData() {
 	const [notificatedUsersByEmail, setNotificatedUsersByEmail] = useState([]);
 	const [notificatedUsersByCellPhone, setNotificatedUsersByCellPhone] =
 		useState([]);
+	let contador = 0;
+
+	const updateglpLine = () => {
+		if (glpDataLine.length >= 12) {
+			glpDataLine.splice(0, 1);
+		} else {
+			setGlpDataLine([...glpDataLine, glp]);
+		}
+	};
+
+	const updatecoLine = () => {
+		if (coDataLine.length >= 12) {
+			coDataLine.splice(0, 1);
+		} else {
+			setCoDataLine([...coDataLine, co]);
+		}
+	};
+	useEffect(() => {
+		updateglpLine();
+		updatecoLine();
+		// eslint-disable-next-line
+		if (glp < 1 && co < 1) {
+			// eslint-disable-next-line
+			contador = 0;
+		}
+		if (glp > 20 || co > 20) {
+			const interval = setInterval(() => {
+				handleNotifications(glp, co);
+				contador++;
+				console.log("Notificaciones", contador);
+			}, 120000);
+			return () => clearInterval(interval);
+		}
+	});
 
 	useEffect(() => {
 		const glpData = database.ref("Sensor1/lpg");
@@ -45,24 +79,7 @@ export default function SensorData() {
 			setCo(snapshot.val());
 		});
 	}, []);
-	const updateglpLine = () => {
-		if (glpDataLine.length >= 12) {
-			glpDataLine.splice(0, 1);
-		} else {
-			setGlpDataLine([...glpDataLine, glp]);
-		}
-	};
-	const updatecoLine = () => {
-		if (coDataLine.length >= 12) {
-			coDataLine.splice(0, 1);
-		} else {
-			setCoDataLine([...coDataLine, co]);
-		}
-	};
-	useEffect(() => {
-		updateglpLine();
-		updatecoLine();
-	});
+
 	useEffect(() => {
 		firestore
 			.collection("userNotificationInfo")
@@ -73,73 +90,6 @@ export default function SensorData() {
 			});
 	}, [currentUser]);
 
-	const handleNotifications = (data1, data2) => {
-		const message = `Se ha detectado la presencia de gas en niveles peligrosos, GLP = ${data1} PPM y CO = ${data2} PPM`;
-
-		const text = "Se ha detectado la presencia de gas en niveles peligrosos";
-
-		notificatedUsersByEmail.forEach(async (element) => {
-			const data = { email: element, message };
-			await axios
-				.post(apiUrl + "/sendMailNotifications", data)
-				.then((response) => {
-					console.log(" mail", response);
-					toast.success(
-						"Gases en nivel peligroso, se ha enviado una notificacion via MAIL",
-						{
-							position: toast.POSITION.BOTTOM_RIGHT,
-							className: "foo-bar",
-						}
-					);
-				})
-				.then(() => {
-					const now = new Date();
-					firestore
-						.collection("reports")
-						.doc(currentUser.uid)
-						.update({
-							alertMail: firebase.firestore.FieldValue.arrayUnion(now),
-						});
-				})
-				.catch((err) => {
-					toast.error(err, {
-						position: toast.POSITION.BOTTOM_RIGHT,
-						className: "foo-bar",
-					});
-				});
-		});
-		notificatedUsersByCellPhone.forEach(async (element) => {
-			const data = { number: element, text };
-			await axios
-				.post(apiUrl + "/sendSmsNotification", data)
-				.then((response) => {
-					console.log(" sms", response);
-					toast.success(
-						"Gases en nivel peligroso, se ha enviado una notificacion via SMS",
-						{
-							position: toast.POSITION.BOTTOM_RIGHT,
-							className: "foo-bar",
-						}
-					);
-				})
-				.then(() => {
-					const now = new Date();
-					firestore
-						.collection("reports")
-						.doc(currentUser.uid)
-						.update({
-							alertSMS: firebase.firestore.FieldValue.arrayUnion(now),
-						});
-				})
-				.catch((err) => {
-					toast.error(err, {
-						position: toast.POSITION.BOTTOM_RIGHT,
-						className: "foo-bar",
-					});
-				});
-		});
-	};
-	let contador = 0;
 	useEffect(() => {
 		if ((glp > 20 && contador === 0) || (co > 20 && contador === 0)) {
 			handleNotifications(glp, co);
@@ -149,22 +99,114 @@ export default function SensorData() {
 		}
 		// eslint-disable-next-line
 	}, [glp, co]);
-	useEffect(() => {
-		// eslint-disable-next-line
-		if (glp < 1 && co < 1) {
-			// eslint-disable-next-line
-			contador = 0;
+
+	const handleNotifications = (glp, co) => {
+		const message = `Se ha detectado la presencia de gas en niveles peligrosos, GLP = ${glp} PPM y CO = ${co} PPM`;
+
+		const text = `Se ha detectado la presencia de gas en niveles peligrosos, GLP = ${glp} PPM y CO = ${co} PPM`;
+
+		if (notificatedUsersByEmail.length > 0) {
+			notificatedUsersByEmail.forEach(async (element) => {
+				const data = { email: element, message };
+				await axios
+					.post(apiUrl + "/sendMailNotifications", data)
+					.then((response) => {
+						console.log(" mail", response);
+						toast.success(
+							"Gases en nivel peligroso, se ha enviado una notificacion via MAIL",
+							{
+								position: toast.POSITION.BOTTOM_RIGHT,
+								className: "foo-bar",
+							}
+						);
+					})
+					.then(() => {
+						const date = new Date();
+						const data = { glp, co, date, withMail: true };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertMail: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+					})
+					.catch((err) => {
+						const date = new Date();
+						const data = { glp, co, date, withMail: false };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+						toast.error(err, {
+							position: toast.POSITION.BOTTOM_RIGHT,
+							className: "foo-bar",
+						});
+					});
+			});
+		} else {
+			const date = new Date();
+			const data = { glp, co, date, withMail: false };
+			firestore
+				.collection("reports")
+				.doc(currentUser.uid)
+				.update({
+					alertMail: firebase.firestore.FieldValue.arrayUnion(data),
+				});
 		}
 
-		if (glp > 20 || co > 20) {
-			const interval = setInterval(() => {
-				handleNotifications(glp, co);
-				contador++;
-				console.log("Notificaciones", contador);
-			}, 120000);
-			return () => clearInterval(interval);
+		if (notificatedUsersByCellPhone.length > 0) {
+			notificatedUsersByCellPhone.forEach(async (element) => {
+				const data = { number: element, text };
+				await axios
+					.post(apiUrl + "/sendSmsNotification", data)
+					.then((response) => {
+						console.log(" sms", response);
+						toast.success(
+							"Gases en nivel peligroso, se ha enviado una notificacion via SMS",
+							{
+								position: toast.POSITION.BOTTOM_RIGHT,
+								className: "foo-bar",
+							}
+						);
+					})
+					.then(() => {
+						const date = new Date();
+						const data = { glp, co, date, withSms: true };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+					})
+					.catch((err) => {
+						const date = new Date();
+						const data = { glp, co, date, withSms: false };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+						toast.error(err, {
+							position: toast.POSITION.BOTTOM_RIGHT,
+							className: "foo-bar",
+						});
+					});
+			});
+		} else {
+			const date = new Date();
+			const data = { glp, co, date, withMail: false };
+			firestore
+				.collection("reports")
+				.doc(currentUser.uid)
+				.update({
+					alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+				});
 		}
-	});
+	};
 
 	const chartData1 = {
 		data1: (canvas) => {
@@ -389,64 +431,23 @@ export default function SensorData() {
 							<Card className="card-chart mh-100" style={{ height: "450px" }}>
 								<CardHeader>
 									<CardTitle>
-										<h1>Titulo de los gases licuados del petroleo</h1>
+										<h1>Gas metano CH4</h1>
 									</CardTitle>
 								</CardHeader>
 								<CardBody className="">
-									<Table className="tablesorter" responsive>
-										<thead className="text-primary">
-											<tr>
-												<th>Name</th>
-												<th>Country</th>
-												<th>City</th>
-												<th className="text-center">Salary</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Dakota Rice</td>
-												<td>Niger</td>
-												<td>Oud-Turnhout</td>
-												<td className="text-center">$36,738</td>
-											</tr>
-											<tr>
-												<td>Minerva Hooper</td>
-												<td>Curaçao</td>
-												<td>Sinaai-Waas</td>
-												<td className="text-center">$23,789</td>
-											</tr>
-											<tr>
-												<td>Sage Rodriguez</td>
-												<td>Netherlands</td>
-												<td>Baileux</td>
-												<td className="text-center">$56,142</td>
-											</tr>
-											<tr>
-												<td>Philip Chaney</td>
-												<td>Korea, South</td>
-												<td>Overland Park</td>
-												<td className="text-center">$38,735</td>
-											</tr>
-											<tr>
-												<td>Doris Greene</td>
-												<td>Malawi</td>
-												<td>Feldkirchen in Kärnten</td>
-												<td className="text-center">$63,542</td>
-											</tr>
-											<tr>
-												<td>Mason Porter</td>
-												<td>Chile</td>
-												<td>Gloucester</td>
-												<td className="text-center">$78,615</td>
-											</tr>
-											<tr>
-												<td>Jon Porter</td>
-												<td>Portugal</td>
-												<td>Gloucester</td>
-												<td className="text-center">$98,615</td>
-											</tr>
-										</tbody>
-									</Table>
+									<div className="container">
+										<h4>
+											Su particularidad es que es un asfixiante simple, ya que
+											actúa desplazando el oxigeno que respiramos, (por sobre el
+											25% produce asfixia por deficiencia de oxigeno), lo que
+											significa que se puede estar expuesto a este gas en bajas
+											cantidades sin sufrir mayores problemas físicos.
+											<br /> Sin embargo su real peligro es su gran porcentaje
+											de inflamabilidad, ya que su limite de explosividad varia
+											entre un 5% en su nivel mínimo de explosividad y un 15% en
+											su nivel máximo.
+										</h4>
+									</div>
 								</CardBody>
 							</Card>
 						</Col>
@@ -479,61 +480,88 @@ export default function SensorData() {
 							<Card className="card-chart mh-100" style={{ height: "450px" }}>
 								<CardHeader>
 									<CardTitle>
-										<h1>Titulo de los gases licuados del petroleo</h1>
+										<h1>Monoxido de carbono Co2</h1>
 									</CardTitle>
 								</CardHeader>
 								<CardBody className="">
 									<Table className="tablesorter" responsive>
 										<thead className="text-primary">
 											<tr>
-												<th>Name</th>
-												<th>Country</th>
-												<th>City</th>
-												<th className="text-center">Salary</th>
+												<th>
+													<h5>Concentracion de carbono</h5>
+												</th>
+												<th>
+													<h5>Tiempo de exposicion</h5>
+												</th>
+												<th>
+													<h5>Signos y sintomas</h5>
+												</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Dakota Rice</td>
-												<td>Niger</td>
-												<td>Oud-Turnhout</td>
-												<td className="text-center">$36,738</td>
+												<td>
+													<h5>44 PPM (0.0040%)</h5>
+												</td>
+												<td>
+													<h5>6 a 8 horas</h5>
+												</td>
+												<td>
+													<h5>
+														Maxima concentracion permitida. Labios y uñas toman
+														un color rojo brillante
+													</h5>
+												</td>
 											</tr>
 											<tr>
-												<td>Minerva Hooper</td>
-												<td>Curaçao</td>
-												<td>Sinaai-Waas</td>
-												<td className="text-center">$23,789</td>
+												<td>
+													<h5>200 PPM (0.02%)</h5>
+												</td>
+												<td>
+													<h5>2 a 3 horas</h5>
+												</td>
+												<td>
+													<h5>cefalea leve</h5>
+												</td>
 											</tr>
 											<tr>
-												<td>Sage Rodriguez</td>
-												<td>Netherlands</td>
-												<td>Baileux</td>
-												<td className="text-center">$56,142</td>
+												<td>
+													<h5>400 PPM (0.4%)</h5>
+												</td>
+												<td>
+													<h5>1 a 2 horas</h5>
+												</td>
+												<td>
+													<h5>cefalea frontal</h5>
+												</td>
 											</tr>
 											<tr>
-												<td>Philip Chaney</td>
-												<td>Korea, South</td>
-												<td>Overland Park</td>
-												<td className="text-center">$38,735</td>
+												<td>
+													<h5>800 PPM (0.08%)</h5>
+												</td>
+												<td>
+													<h5>45 minutos</h5>
+												</td>
+												<td>
+													<h5>
+														Mareos, náuseas y convulsiones. <br />
+														Insensibilidad durante 2 horas.
+													</h5>
+												</td>
 											</tr>
 											<tr>
-												<td>Doris Greene</td>
-												<td>Malawi</td>
-												<td>Feldkirchen in Kärnten</td>
-												<td className="text-center">$63,542</td>
-											</tr>
-											<tr>
-												<td>Mason Porter</td>
-												<td>Chile</td>
-												<td>Gloucester</td>
-												<td className="text-center">$78,615</td>
-											</tr>
-											<tr>
-												<td>Jon Porter</td>
-												<td>Portugal</td>
-												<td>Gloucester</td>
-												<td className="text-center">$98,615</td>
+												<td>
+													<h5>1600 PPM (0.16%)</h5>
+												</td>
+												<td>
+													<h5>20 minutos</h5>
+												</td>
+												<td>
+													<h5>
+														cefalea, taquicardia, mareos y nauseas. <br />
+														En menos de 2 horas <b>Muerte</b>
+													</h5>
+												</td>
 											</tr>
 										</tbody>
 									</Table>
