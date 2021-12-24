@@ -6,7 +6,7 @@ export default function ReportTable() {
 		<>
 			<div className="content">
 				<Row>
-					<Col sm="12" lg="4">
+					<Col sm="12" lg="6">
 						<Card className="">
 							<Table bordered className="p-5">
 								<thead>

@@ -137,7 +137,7 @@ export default function SensorData() {
 							.collection("reports")
 							.doc(currentUser.uid)
 							.update({
-								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+								alertMail: firebase.firestore.FieldValue.arrayUnion(data),
 							});
 						toast.error(err, {
 							position: toast.POSITION.BOTTOM_RIGHT,
@@ -145,15 +145,6 @@ export default function SensorData() {
 						});
 					});
 			});
-		} else {
-			const date = new Date();
-			const data = { glp, co, date, withMail: false };
-			firestore
-				.collection("reports")
-				.doc(currentUser.uid)
-				.update({
-					alertMail: firebase.firestore.FieldValue.arrayUnion(data),
-				});
 		}
 
 		if (notificatedUsersByCellPhone.length > 0) {
@@ -196,15 +187,6 @@ export default function SensorData() {
 						});
 					});
 			});
-		} else {
-			const date = new Date();
-			const data = { glp, co, date, withMail: false };
-			firestore
-				.collection("reports")
-				.doc(currentUser.uid)
-				.update({
-					alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
-				});
 		}
 	};
 
