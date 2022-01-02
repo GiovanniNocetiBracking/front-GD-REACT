@@ -10,7 +10,7 @@ import {
 	ButtonGroup,
 	Table,
 } from "reactstrap";
-import { Line, Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import classNames from "classnames";
 import firebase from "firebase/app";
 import { database, firestore } from "../Firebase/firebaseConfig";
@@ -18,7 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Gauge from "variables/gauge";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from "axios";
-import { chart1, chart2, chart3, chart4 } from "variables/charts.js";
+import { chart1 } from "variables/charts.js";
 
 export default function SensorData() {
 	const [bigChartData, setbigChartData] = useState("data1");
@@ -122,7 +122,7 @@ export default function SensorData() {
 					})
 					.then(() => {
 						const date = new Date();
-						const data = { glp, co, date, withMail: true };
+						const data = { glp, co, date, withMail: true, type: "mail" };
 						firestore
 							.collection("reports")
 							.doc(currentUser.uid)
@@ -132,7 +132,7 @@ export default function SensorData() {
 					})
 					.catch((err) => {
 						const date = new Date();
-						const data = { glp, co, date, withMail: false };
+						const data = { glp, co, date, withMail: false, type: "mail" };
 						firestore
 							.collection("reports")
 							.doc(currentUser.uid)
@@ -164,7 +164,7 @@ export default function SensorData() {
 					})
 					.then(() => {
 						const date = new Date();
-						const data = { glp, co, date, withSms: true };
+						const data = { glp, co, date, withSms: true, type: "sms" };
 						firestore
 							.collection("reports")
 							.doc(currentUser.uid)
@@ -174,7 +174,7 @@ export default function SensorData() {
 					})
 					.catch((err) => {
 						const date = new Date();
-						const data = { glp, co, date, withSms: false };
+						const data = { glp, co, date, withSms: false, type: "sms" };
 						firestore
 							.collection("reports")
 							.doc(currentUser.uid)
@@ -252,131 +252,6 @@ export default function SensorData() {
 						pointHoverBorderWidth: 15,
 						pointRadius: 4,
 						data: [...coDataLine],
-					},
-				],
-			};
-		},
-	};
-	const chartData2 = {
-		data: (canvas) => {
-			let ctx = canvas.getContext("2d");
-
-			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-			gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
-			gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
-			gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
-
-			return {
-				labels: [
-					"Lunes",
-					"Martes",
-					"Miercoles",
-					"Jueves",
-					"Viernes",
-					"Sabado",
-					"Domingo",
-				],
-				datasets: [
-					{
-						label: "Data",
-						fill: true,
-						backgroundColor: gradientStroke,
-						borderColor: "#1f8ef1",
-						borderWidth: 2,
-						borderDash: [],
-						borderDashOffset: 0.0,
-						pointBackgroundColor: "#1f8ef1",
-						pointBorderColor: "rgba(255,255,255,0)",
-						pointHoverBackgroundColor: "#1f8ef1",
-						pointBorderWidth: 20,
-						pointHoverRadius: 4,
-						pointHoverBorderWidth: 15,
-						pointRadius: 4,
-						data: [80, 100, 70, 80, 120, 80, 50],
-					},
-				],
-			};
-		},
-	};
-	const chartData3 = {
-		data: (canvas) => {
-			let ctx = canvas.getContext("2d");
-
-			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-			gradientStroke.addColorStop(1, "rgba(72,72,176,0.1)");
-			gradientStroke.addColorStop(0.4, "rgba(72,72,176,0.0)");
-			gradientStroke.addColorStop(0, "rgba(119,52,169,0)"); //purple colors
-
-			return {
-				labels: [
-					"Enero",
-					"Febrero",
-					"Marzo",
-					"Abril",
-					"Mayo",
-					"Junio",
-					"Julio",
-					"Agosto",
-					"Septiembre",
-					"Octubre",
-					"Noviembre",
-					"Diciembre",
-				],
-				datasets: [
-					{
-						label: "Countries",
-						fill: true,
-						backgroundColor: gradientStroke,
-						hoverBackgroundColor: gradientStroke,
-						borderColor: "#d048b6",
-						borderWidth: 2,
-						borderDash: [],
-						borderDashOffset: 0.0,
-						data: [53, 20, 10, 80, 100, 45, 53, 20, 10, 80, 100, 45],
-					},
-				],
-			};
-		},
-	};
-	const chartData4 = {
-		data: (canvas) => {
-			let ctx = canvas.getContext("2d");
-
-			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-			gradientStroke.addColorStop(1, "rgba(66,134,121,0.15)");
-			gradientStroke.addColorStop(0.4, "rgba(66,134,121,0.0)"); //green colors
-			gradientStroke.addColorStop(0, "rgba(66,134,121,0)"); //green colors
-
-			return {
-				labels: [
-					"Lunes",
-					"Martes",
-					"Miercoles",
-					"Jueves",
-					"Viernes",
-					"Sabado",
-					"Domingo",
-				],
-				datasets: [
-					{
-						label: "My First dataset",
-						fill: true,
-						backgroundColor: gradientStroke,
-						borderColor: "#00d6b4",
-						borderWidth: 2,
-						borderDash: [],
-						borderDashOffset: 0.0,
-						pointBackgroundColor: "#00d6b4",
-						pointBorderColor: "rgba(255,255,255,0)",
-						pointHoverBackgroundColor: "#00d6b4",
-						pointBorderWidth: 20,
-						pointHoverRadius: 4,
-						pointHoverBorderWidth: 15,
-						pointRadius: 4,
-						data: [80, 100, 70, 80, 120, 80, 50],
 					},
 				],
 			};
@@ -613,61 +488,6 @@ export default function SensorData() {
 											data={chartData1[bigChartData]}
 											options={chart1.options}
 										/>
-									</div>
-								</CardBody>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
-						<Col lg="6">
-							<Card className="card-chart">
-								<CardHeader>
-									<h5 className="card-category">
-										Total De correos de alerta / Semana
-									</h5>
-									<CardTitle tag="h3">
-										<i className="tim-icons icon-bell-55 text-info" /> 76
-									</CardTitle>
-								</CardHeader>
-								<CardBody>
-									<div className="chart-area">
-										<Line data={chartData2.data} options={chart2.options} />
-									</div>
-								</CardBody>
-							</Card>
-						</Col>
-
-						<Col lg="6">
-							<Card className="card-chart">
-								<CardHeader>
-									<h5 className="card-category">
-										Total de SMS de alerta / Semana
-									</h5>
-									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> 12
-									</CardTitle>
-								</CardHeader>
-								<CardBody>
-									<div className="chart-area">
-										<Line data={chartData4.data} options={chart4.options} />
-									</div>
-								</CardBody>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
-						<Col lg="12">
-							<Card className="card-chart">
-								<CardHeader>
-									<h5 className="card-category">Total de alertas por mes</h5>
-									<CardTitle tag="h3">
-										<i className="tim-icons icon-delivery-fast text-primary" />{" "}
-										Alertas/Mes
-									</CardTitle>
-								</CardHeader>
-								<CardBody>
-									<div className="chart-area">
-										<Bar data={chartData3.data} options={chart3.options} />
 									</div>
 								</CardBody>
 							</Card>
