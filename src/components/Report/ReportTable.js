@@ -83,7 +83,7 @@ export default function ReportTable() {
 			notificatedUsersByCellPhone.forEach(async (element) => {
 				const data = { number: element, text };
 				await axios
-					.post(apiUrl + "/sendSmsNotification", data)
+					.post(apiUrl + "/sendSmsNotifications", data)
 					.then((response) => {
 						console.log(" sms", response);
 						toast.success(
