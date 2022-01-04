@@ -34,7 +34,7 @@ export default function SensorData() {
 	const [notificatedUsersByEmail, setNotificatedUsersByEmail] = useState([]);
 	const [notificatedUsersByCellPhone, setNotificatedUsersByCellPhone] =
 		useState([]);
-	let contador = 0;
+	const [contador, setContador] = useState(0);
 
 	const updateglpLine = () => {
 		if (glpDataLine.length >= 12) {
@@ -57,16 +57,18 @@ export default function SensorData() {
 		// eslint-disable-next-line
 		if (glp < 1 && co < 1) {
 			// eslint-disable-next-line
-			contador = 0;
+			setContador(0);
 		}
 		if (glp > 20 || co > 20) {
 			const interval = setInterval(() => {
 				handleNotifications(glp, co);
-				contador++;
+				// eslint-disable-next-line
+				setContador(contador + 1);
 				console.log("Notificaciones", contador);
 			}, 120000);
 			return () => clearInterval(interval);
 		}
+		// eslint-disable-next-line
 	});
 
 	useEffect(() => {
@@ -94,7 +96,7 @@ export default function SensorData() {
 		if ((glp > 20 && contador === 0) || (co > 20 && contador === 0)) {
 			handleNotifications(glp, co);
 			console.log("notificacion 0", contador);
-			contador++;
+			setContador(contador + 1);
 			// eslint-disable-next-line
 		}
 		// eslint-disable-next-line

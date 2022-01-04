@@ -9,11 +9,21 @@ import {
 	DropdownMenu,
 	DropdownItem,
 } from "reactstrap";
-import { firestore } from "../Firebase/firebaseConfig";
+import firebase from "firebase/app";
+import { firestore, database } from "../Firebase/firebaseConfig";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function ReportTable() {
 	const { currentUser } = useAuth();
+	const [glp, setGlp] = useState(0);
+	const [co, setCo] = useState(0);
+	const [notificatedUsersByEmail, setNotificatedUsersByEmail] = useState([]);
+	const [notificatedUsersByCellPhone, setNotificatedUsersByCellPhone] =
+		useState([]);
+	const [contador, setContador] = useState(0);
 	const [dropdown, setDropdown] = useState(false);
 	const [selected, setSelected] = useState("ambos");
 	const [reportsByMail, setReportsByMail] = useState([]);
@@ -21,12 +31,129 @@ export default function ReportTable() {
 	const [reports, setReports] = useState([]);
 	const [filteredReports, setFilteredReports] = useState([]);
 	const [flag, setFlag] = useState(false);
+	const apiUrl = process.env.REACT_APP_URL_API;
+	const handleNotifications = (glp, co) => {
+		const message = `Se ha detectado la presencia de gas en niveles peligrosos, GLP = ${glp} PPM y CO = ${co} PPM`;
+
+		const text = `Se ha detectado la presencia de gas en niveles peligrosos, GLP = ${glp} PPM y CO = ${co} PPM`;
+
+		if (notificatedUsersByEmail.length > 0) {
+			notificatedUsersByEmail.forEach(async (element) => {
+				const data = { email: element, message };
+				await axios
+					.post(apiUrl + "/sendMailNotifications", data)
+					.then((response) => {
+						console.log(" mail", response);
+						toast.success(
+							"Gases en nivel peligroso, se ha enviado una notificacion via MAIL",
+							{
+								position: toast.POSITION.BOTTOM_RIGHT,
+								className: "foo-bar",
+							}
+						);
+					})
+					.then(() => {
+						const date = new Date();
+						const data = { glp, co, date, withMail: true, type: "mail" };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertMail: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+					})
+					.catch((err) => {
+						const date = new Date();
+						const data = { glp, co, date, withMail: false, type: "mail" };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertMail: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+						toast.error(err, {
+							position: toast.POSITION.BOTTOM_RIGHT,
+							className: "foo-bar",
+						});
+					});
+			});
+		}
+
+		if (notificatedUsersByCellPhone.length > 0) {
+			notificatedUsersByCellPhone.forEach(async (element) => {
+				const data = { number: element, text };
+				await axios
+					.post(apiUrl + "/sendSmsNotification", data)
+					.then((response) => {
+						console.log(" sms", response);
+						toast.success(
+							"Gases en nivel peligroso, se ha enviado una notificacion via SMS",
+							{
+								position: toast.POSITION.BOTTOM_RIGHT,
+								className: "foo-bar",
+							}
+						);
+					})
+					.then(() => {
+						const date = new Date();
+						const data = { glp, co, date, withSms: true, type: "sms" };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+					})
+					.catch((err) => {
+						const date = new Date();
+						const data = { glp, co, date, withSms: false, type: "sms" };
+						firestore
+							.collection("reports")
+							.doc(currentUser.uid)
+							.update({
+								alertSMS: firebase.firestore.FieldValue.arrayUnion(data),
+							});
+						toast.error(err, {
+							position: toast.POSITION.BOTTOM_RIGHT,
+							className: "foo-bar",
+						});
+					});
+			});
+		}
+	};
+
+	useEffect(() => {
+		if (glp < 1 && co < 1) {
+			// eslint-disable-next-line
+			setContador(0);
+		}
+		if (glp > 20 || co > 20) {
+			const interval = setInterval(() => {
+				handleNotifications(glp, co);
+				// eslint-disable-next-line
+				setContador(contador + 1);
+				console.log("Notificaciones", contador);
+			}, 120000);
+			return () => clearInterval(interval);
+		}
+		// eslint-disable-next-line
+	});
+	useEffect(() => {
+		if ((glp > 20 && contador === 0) || (co > 20 && contador === 0)) {
+			handleNotifications(glp, co);
+			console.log("notificacion 0", contador);
+			setContador(contador + 1);
+			// eslint-disable-next-line
+		}
+		// eslint-disable-next-line
+	}, [glp, co]);
+
 	const handleOpen = () => {
 		setDropdown(!dropdown);
 	};
 
 	const handleFlag = () => {
-		for (let i = 0; i < 1; i++) {
+		for (let i = 0; i < 2; i++) {
 			setTimeout(() => {
 				setFlag(!flag);
 			}, 1000);
@@ -52,19 +179,32 @@ export default function ReportTable() {
 	const handleFilteredSearch = (reports, selected) => {
 		let filtered = reports.filter((items) => items.type === selected);
 		setFilteredReports(filtered);
-		console.log(filtered);
 	};
 	useEffect(() => {
 		handleSearch();
-		console.log(reports);
 		// eslint-disable-next-line
-	}, [flag]);
+	}, [flag, glp, co]);
 	useEffect(() => {
 		handleFilteredSearch(reports, selected);
 		// eslint-disable-next-line
 	}, [selected]);
 	useEffect(() => {
 		handleFlag();
+		const glpData = database.ref("Sensor1/lpg");
+		glpData.on("value", (snapshot) => {
+			setGlp(snapshot.val());
+		});
+		const coData = database.ref("Sensor1/co");
+		coData.on("value", (snapshot) => {
+			setCo(snapshot.val());
+		});
+		firestore
+			.collection("userNotificationInfo")
+			.doc(currentUser.uid)
+			.onSnapshot((doc) => {
+				setNotificatedUsersByEmail(doc.data().notificatedUsersByMail);
+				setNotificatedUsersByCellPhone(doc.data().notificatedUsersByCellPhone);
+			});
 		// eslint-disable-next-line
 	}, [currentUser]);
 
@@ -190,6 +330,7 @@ export default function ReportTable() {
 					</Row>
 				</div>
 			</div>
+			<ToastContainer />
 		</>
 	);
 }
